@@ -1,0 +1,27 @@
+[project]
+name = "tool-cat"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "tsmdt", email = "thomas.schmidt@uni-mannheim.de" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "hugo>=0.169.0",
+    "openpyxl>=3.1.5",
+]
+
+[project.scripts]
+tool-cat = "toolcat:main"
+
+[tool.setuptools.packages.find]
+include = ["toolcat*"]
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]

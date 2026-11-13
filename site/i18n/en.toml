@@ -1,0 +1,80 @@
+# Interface texts. Labels for type, use case and costs come from the spreadsheet's picklists.
+title = "Discover great AI tools for teaching and OER"
+intro = "Hand-picked generative AI tools for research, teaching and creating Open Educational Resources. Pick what you want to get done, flip through the cards and find your new favourites."
+search_label = "Search tools"
+search_placeholder = "Search by name, purpose or description"
+prompt = "What would you like to do?"
+filters = "More filters"
+reset = "Start over"
+no_results = "No tool matches your search and filters."
+deck_hint = "Hover over the pile or tap it to spread the cards out. Or pick a goal above and see what turns up."
+visit_tool = "opens the tool's website"
+language_switch = "Language"
+
+# {n} and {total} are filled in by the browser.
+[results]
+other = "{n} of {total} tools"
+
+[deck_title]
+one = "{{ .Count }} tool in the deck."
+other = "{{ .Count }} tools in the deck."
+
+# Filter headings, also used as labels on the cards
+[facet_type]
+other = "Type"
+[facet_use_cases]
+other = "Use cases"
+[facet_location_group]
+other = "Service location"
+[facet_costs]
+other = "Costs"
+[facet_account]
+other = "Account required"
+[facet_opensource]
+other = "Open source"
+[facet_oer]
+other = "Suitable for OER"
+[facet_skill]
+other = "Technical skill"
+
+# Values
+[true]
+other = "yes"
+[false]
+other = "no"
+[local]
+other = "Runs on your device"
+[eea]
+other = "EU/EEA"
+[non_eea]
+other = "Outside EU/EEA"
+[skill_low]
+other = "low"
+[skill_basic]
+other = "basic"
+[skill_experienced]
+other = "experienced"
+[skill_expert]
+other = "expert"
+
+# Countries: add country_<CODE> for every new code used in the service_location column
+[country_DE]
+other = "Germany"
+[country_US]
+other = "United States"
+[country_EU]
+other = "European Union"
+[country_NO]
+other = "Norway"
+[country_AT]
+other = "Austria"
+[country_IN]
+other = "India"
+[country_NZ]
+other = "New Zealand"
+[country_FR]
+other = "France"
+[country_SG]
+other = "Singapore"
+[country_UK]
+other = "United Kingdom"

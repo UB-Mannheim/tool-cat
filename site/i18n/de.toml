@@ -1,0 +1,76 @@
+title = "KI-Tools für die Lehre und Erstellung von OER"
+intro = "Eine Sammlung ausgewählter generativer KI-Tools für die universitäre Lehre und die Erstellung von Open Educational Resources (OER). Zusammengetragen im Projekt [AiDaLi](https://www.uni-mannheim.de/zll/projekte/aidali-durch-oer-produktion-zu-ai-und-data-literacy/) der [Universität Mannheim](https://www.uni-mannheim.de/)."
+search_label = "Tools durchsuchen"
+search_placeholder = "Suche nach Name, Anwendungszweck oder Beschreibung"
+prompt = "Anwendungszwecke"
+filters = "Weitere Filter"
+reset = "Neu starten"
+no_results = "Kein Tool passt zu Suche und Filtern."
+deck_hint = "Fahren Sie mit der Maus über den Stapel oder tippen Sie ihn an, um die Karten aufzufächern. Oder wählen Sie oben ein Ziel."
+visit_tool = "öffnet die Website des Tools"
+language_switch = "Sprache"
+
+# {n} und {total} setzt der Browser ein.
+[results]
+other = "{n} von {total} Tools"
+
+[deck_title]
+one = "{{ .Count }} Tool im Stapel."
+other = "{{ .Count }} Tools im Stapel."
+
+[facet_type]
+other = "Art"
+[facet_use_cases]
+other = "Einsatzzwecke"
+[facet_location_group]
+other = "Standort des Dienstes"
+[facet_costs]
+other = "Kosten"
+[facet_account]
+other = "Konto erforderlich"
+[facet_opensource]
+other = "Open Source"
+[facet_oer]
+other = "Für OER geeignet"
+[facet_skill]
+other = "Technische Vorkenntnisse"
+
+[true]
+other = "ja"
+[false]
+other = "nein"
+[local]
+other = "Läuft auf dem eigenen Gerät"
+[eea]
+other = "EU/EWR"
+[non_eea]
+other = "Außerhalb EU/EWR"
+[skill_low]
+other = "gering"
+[skill_basic]
+other = "Grundkenntnisse"
+[skill_experienced]
+other = "fortgeschritten"
+[skill_expert]
+other = "Expertenwissen"
+
+[country_DE]
+other = "Deutschland"
+[country_US]
+other = "USA"
+[country_EU]
+other = "Europäische Union"
+[country_NO]
+other = "Norwegen"
+[country_AT]
+other = "Österreich"
+[country_IN]
+other = "Indien"
+[country_NZ]
+other = "Neuseeland"
+[country_FR]
+other = "Frankreich"
+[country_SG]
+other = "Singapur"
+[country_UK]
+other = "Vereinigtes Königreich"

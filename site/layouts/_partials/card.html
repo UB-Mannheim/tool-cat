@@ -1,0 +1,57 @@
+{{- /* One tool card. Call with (dict "tool" … "hues" … "levels" …). */ -}}
+{{- $t := .tool }}{{ $hues := .hues }}{{ $lang := site.Language.Lang }}
+{{- $desc := index $t.description $lang | default $t.description.en }}
+{{- $notes := index $t.notes $lang | default $t.notes.en }}
+{{- $cases := slice }}
+{{- range $t.use_cases }}{{ $cases = $cases | append (partial "label.html" (dict "facet" "use_cases" "key" .)) }}{{ end }}
+<article class="card" id="t-{{ $t.id }}"
+  data-type="{{ $t.type }}" data-use_cases="{{ delimit $t.use_cases "|" }}" data-location_group="{{ $t.location_group }}"
+  data-costs="{{ $t.costs }}" data-account="{{ $t.account }}" data-opensource="{{ $t.opensource }}" data-oer="{{ $t.oer }}"
+  data-skill="{{ $t.skill }}" data-search="{{ lower (delimit (slice $t.title $desc $notes (delimit $cases " ")) " ") }}">
+  <header>
+    <p class="label cap">{{ partial "label.html" (dict "facet" "type" "key" $t.type) }}</p>
+    <h2 class="card-title">
+      {{- if $t.url_is_link -}}
+      <a href="{{ $t.url }}" rel="noopener">{{ $t.title }}<svg class="icon" aria-hidden="true"><use href="#i-out"/></svg><span class="sr-only"> ({{ T "visit_tool" }})</span></a>
+      {{- else }}{{ $t.title }}{{ end -}}
+    </h2>
+  </header>
+  {{- /* Until a German text exists, the English one is shown and marked as English. */}}
+  <p class="card-desc"{{ if and (ne $lang "en") (not (index $t.description $lang)) }} lang="en"{{ end }}>{{ $desc }}</p>
+  {{- with $notes }}
+  <p class="card-note"{{ if and (ne $lang "en") (not (index $t.notes $lang)) }} lang="en"{{ end }}>{{ . }}</p>
+  {{- end }}
+  {{- if and $t.url (not $t.url_is_link) }}
+  <p class="card-note">{{ $t.url }}</p>
+  {{- end }}
+  <ul class="tags" aria-label="{{ T "facet_use_cases" }}">
+    {{- range $i, $key := $t.use_cases }}
+    <li class="cap hue hue-{{ index $hues $key }}">{{ index $cases $i }}</li>
+    {{- end }}
+  </ul>
+  <dl class="attrs">
+    {{- range slice "oer" "costs" "account" "opensource" }}
+    {{- $value := index $t . }}
+    <div>
+      <dt class="label">{{ T (print "facet_" .) }}</dt>
+      {{- if eq . "costs" }}
+      <dd><svg class="icon" aria-hidden="true"><use href="#i-tag"/></svg><span class="cap">{{ partial "label.html" (dict "facet" . "key" $value) }}</span></dd>
+      {{- else }}
+      <dd class="is-{{ $value }}"><svg class="icon" aria-hidden="true"><use href="#i-{{ cond $value "check" "x" }}"/></svg>{{ partial "label.html" (dict "facet" . "key" $value) }}</dd>
+      {{- end }}
+    </div>
+    {{- end }}
+    <div>
+      <dt class="label">{{ T "facet_location_group" }}</dt>
+      {{- if eq $t.location "local" }}
+      <dd><svg class="icon" aria-hidden="true"><use href="#i-device"/></svg>{{ T "local" }}</dd>
+      {{- else }}
+      <dd><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg>{{ T (print "country_" $t.location) | default $t.location }}<span class="sub">{{ T $t.location_group }}</span></dd>
+      {{- end }}
+    </div>
+    <div>
+      <dt class="label">{{ T "facet_skill" }}</dt>
+      <dd><span class="meter" data-level="{{ index .levels $t.skill }}" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="cap">{{ partial "label.html" (dict "facet" "skill" "key" $t.skill) }}</span></dd>
+    </div>
+  </dl>
+</article>

@@ -1,0 +1,13 @@
+{{- /* One filter group. With "hues" it is the big use-case picker above the search. The counts are filled in by app.js. */ -}}
+{{- $facet := .facet }}{{ $hues := .hues }}
+<fieldset class="facet{{ if $hues }} goals needs-js{{ end }}" data-facet="{{ $facet.key }}">
+  <legend{{ if not $hues }} class="label"{{ end }}>{{ if $hues }}{{ T "prompt" }}{{ else }}{{ T (print "facet_" $facet.key) }}{{ end }}</legend>
+  <div class="chips">
+    {{- range $i, $v := $facet.values }}
+    <label class="chip{{ if $hues }} hue hue-{{ index $hues $v.key }}{{ end }}">
+      <input type="checkbox" id="f-{{ $facet.key }}-{{ $i }}" name="{{ $facet.key }}" value="{{ $v.key }}">
+      <span class="cap">{{ partial "label.html" (dict "facet" $facet.key "key" $v.key) }}</span><span class="n"></span>
+    </label>
+    {{- end }}
+  </div>
+</fieldset>

@@ -1,0 +1,50 @@
+{{ define "main" }}
+{{- $tools := hugo.Data.tools }}
+{{- $vocab := hugo.Data.vocab }}
+{{- /* Position of each use case and skill level in its picklist: picks the tag colour and fills the skill meter. */}}
+{{- $hues := dict }}{{ $levels := dict }}
+{{- range $vocab }}
+  {{- if eq .key "use_cases" }}{{ range $i, $v := .values }}{{ $hues = merge $hues (dict $v.key (mod $i 13)) }}{{ end }}{{ end }}
+  {{- if eq .key "skill" }}{{ range $i, $v := .values }}{{ $levels = merge $levels (dict $v.key (add $i 1)) }}{{ end }}{{ end }}
+{{- end }}
+<header class="site-head"><div class="wrap">
+  {{ partial "lang-switch.html" . }}
+  <h1 class="site-title">{{ T "title" | markdownify }}</h1>
+  <p class="site-intro">{{ T "intro" | markdownify }}</p>
+</div></header>
+
+{{- /* The use cases are the main way in; every other filter waits behind "More filters". */}}
+<div class="wrap">
+  {{- range where $vocab "key" "use_cases" }}{{ partial "filters.html" (dict "facet" . "hues" $hues) }}{{ end }}
+</div>
+
+<div class="bar needs-js"><div class="wrap">
+  <div class="search" role="search">
+    <label class="sr-only" for="search">{{ T "search_label" }}</label>
+    <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+    <input type="search" id="search" placeholder="{{ T "search_placeholder" }}" autocomplete="off">
+  </div>
+  <p class="count" aria-live="polite" data-count data-text="{{ T "results" }}"></p>
+  <div class="bar-actions">
+    <button type="button" class="btn-link" id="reset" data-reset hidden>{{ T "reset" }}</button>
+    <button type="button" class="btn" id="filter-toggle" aria-expanded="false" aria-controls="filters">
+      <svg class="icon" aria-hidden="true"><use href="#i-filter"/></svg>{{ T "filters" }}<span class="badge"></span>
+    </button>
+  </div>
+</div></div>
+
+<div class="wrap needs-js"><div class="panel" id="filters" hidden>
+  {{- range where $vocab "key" "ne" "use_cases" }}{{ partial "filters.html" (dict "facet" .) }}{{ end }}
+</div></div>
+
+<main class="wrap stage">
+  <div class="deck" id="deck">
+    {{- range $tools }}{{ partial "card.html" (dict "tool" . "hues" $hues "levels" $levels) }}{{ end }}
+  </div>
+  <p class="deck-hint needs-js"><strong>{{ T "deck_title" (len $tools) }}</strong><span>{{ T "deck_hint" }}</span></p>
+  <div class="empty" id="empty" hidden>
+    <p>{{ T "no_results" }}</p>
+    <button type="button" class="btn btn-primary" data-reset>{{ T "reset" }}</button>
+  </div>
+</main>
+{{ end }}

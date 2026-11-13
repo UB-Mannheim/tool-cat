@@ -1,0 +1,5 @@
+<nav class="lang-switch" aria-label="{{ T "language_switch" }}">
+  {{- range hugo.Sites }}
+  <a href="{{ .Home.RelPermalink }}" hreflang="{{ .Language.Lang }}" lang="{{ .Language.Lang }}"{{ if eq .Language.Lang site.Language.Lang }} aria-current="true"{{ end }}>{{ upper .Language.Lang }}</a>
+  {{- end }}
+</nav>

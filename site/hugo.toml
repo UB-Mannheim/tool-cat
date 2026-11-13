@@ -1,0 +1,11 @@
+# The real base URL is passed by `tool-cat build --base-url …` (see README).
+baseURL = "/"
+title = "tool-cat"
+defaultContentLanguage = "de"
+disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
+
+[languages.en]
+weight = 1
+
+[languages.de]
+weight = 2

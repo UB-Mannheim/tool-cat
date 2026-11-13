@@ -1,0 +1,11 @@
+{{- /* Localized label of one vocab value. Call with (dict "facet" "costs" "key" "free").
+       Order: the spreadsheet's label in this language, then the i18n file, then the English label. */ -}}
+{{- $facet := .facet }}{{ $key := string .key }}{{ $label := "" }}
+{{- range where hugo.Data.vocab "key" $facet }}{{ range where .values "key" $key }}
+  {{- $label = index . site.Language.Lang }}
+  {{- if not $label }}
+    {{- if eq $facet "skill" }}{{ $label = T (print "skill_" $key) }}{{ else if not .en }}{{ $label = T $key }}{{ end }}
+  {{- end }}
+  {{- $label = $label | default .en }}
+{{- end }}{{ end }}
+{{- return ($label | default $key) -}}

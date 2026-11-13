@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="{{ site.Language.Lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{{ T "title" }}</title>
+  <meta name="description" content="{{ T "intro" }}">
+  {{- range hugo.Sites }}
+  <link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Home.Permalink }}">
+  {{- end }}
+  {{- /* Without JavaScript every card is listed and the search and filters stay hidden. */}}
+  <script>document.documentElement.classList.add("js")</script>
+  {{- with resources.Get "css/main.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
+  {{- end }}
+  {{- with resources.Get "js/app.js" | minify | fingerprint }}
+  <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+  {{- end }}
+</head>
+<body>
+  <svg hidden aria-hidden="true">
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></symbol>
+    <symbol id="i-device" viewBox="0 0 24 24" fill="none"><path d="M5 6h14v9H5zM3 18.5h18"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24" fill="none"><path d="M4 4h8l8 8-8 8-8-8z"/><circle cx="8.5" cy="8.5" r="1.2"/></symbol>
+  </svg>
+  {{ block "main" . }}{{ end }}
+</body>
+</html>
