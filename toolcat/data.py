@@ -163,8 +163,12 @@ def load(xlsx_path):
         missing_en_desc += not row.get("description_en")
         missing_de_desc += not row.get("description_de")
         tools.append({
-            "id": tool_id, "title": row["title"], "url": url, "url_is_link": url.startswith("http"),
-            "type": pick("type", "type"), "use_cases": cases,
+            "id": tool_id,
+            "title": row["title"],
+            "url": url,
+            "url_is_link": url.startswith("http"),
+            "type": pick("type", "type"),
+            "use_cases": cases,
             "location": location or "local",
             "location_group": "local" if not location else "eea" if location in EEA else "non_eea",
             "costs": pick("costs", "costs", "free" if row["costs"] == "no" else row["costs"]),
