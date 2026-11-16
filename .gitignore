@@ -15,5 +15,5 @@ site/public/
 site/resources/
 site/data/*.json
 .hugo_build.lock
-
+.vscode/
 data/

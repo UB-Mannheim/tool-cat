@@ -7,44 +7,57 @@
   {{- if eq .key "use_cases" }}{{ range $i, $v := .values }}{{ $hues = merge $hues (dict $v.key (mod $i 13)) }}{{ end }}{{ end }}
   {{- if eq .key "skill" }}{{ range $i, $v := .values }}{{ $levels = merge $levels (dict $v.key (add $i 1)) }}{{ end }}{{ end }}
 {{- end }}
-<header class="site-head"><div class="wrap">
+{{- /* Two states. Closed (on load): the pile on the left, title, intro and the filter button beside it.
+       Open (after hovering the pile or opening the filters): a compact header on top, the filters, then the card grid.
+       Without JavaScript the page stays in the open layout and lists every card. */}}
+<div class="app" id="app">
   {{ partial "lang-switch.html" . }}
-  <h1 class="site-title">{{ T "title" | markdownify }}</h1>
-  <p class="site-intro">{{ T "intro" | markdownify }}</p>
-</div></header>
 
-{{- /* The use cases are the main way in; every other filter waits behind "More filters". */}}
-<div class="wrap">
+  <header class="hero">
+    <h1 class="site-title">{{ T "title" | markdownify }}</h1>
+    <p class="site-intro">{{ T "intro" | markdownify }}</p>
+    <div class="hero-actions needs-js">
+      <button type="button" class="btn btn-primary btn-big" id="browse">
+        <svg class="icon" aria-hidden="true"><use href="#i-filter"/></svg>{{ T "browse" }}
+      </button>
+      <p class="deck-hint"><strong>{{ T "deck_title" (len $tools) }}</strong></p>
+    </div>
+  </header>
+
+  {{- /* The use cases are the main way in; every other filter waits behind "More filters". */}}
   {{- range where $vocab "key" "use_cases" }}{{ partial "filters.html" (dict "facet" . "hues" $hues) }}{{ end }}
-</div>
 
-<div class="bar needs-js"><div class="wrap">
-  <div class="search" role="search">
-    <label class="sr-only" for="search">{{ T "search_label" }}</label>
-    <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
-    <input type="search" id="search" placeholder="{{ T "search_placeholder" }}" autocomplete="off">
-  </div>
-  <p class="count" aria-live="polite" data-count data-text="{{ T "results" }}"></p>
-  <div class="bar-actions">
-    <button type="button" class="btn-link" id="reset" data-reset hidden>{{ T "reset" }}</button>
+  <div class="tools-row needs-js">
     <button type="button" class="btn" id="filter-toggle" aria-expanded="false" aria-controls="filters">
       <svg class="icon" aria-hidden="true"><use href="#i-filter"/></svg>{{ T "filters" }}<span class="badge"></span>
     </button>
+    <button type="button" class="btn-link" id="reset" data-reset hidden>{{ T "reset" }}</button>
+    <p class="count" aria-live="polite" data-count data-text="{{ T "results" }}"></p>
   </div>
-</div></div>
 
-<div class="wrap needs-js"><div class="panel" id="filters" hidden>
-  {{- range where $vocab "key" "ne" "use_cases" }}{{ partial "filters.html" (dict "facet" .) }}{{ end }}
-</div></div>
+  <div class="panel needs-js" id="filters" hidden>
+    {{- range where $vocab "key" "ne" "use_cases" }}{{ partial "filters.html" (dict "facet" .) }}{{ end }}
+  </div>
 
-<main class="wrap stage">
-  <div class="deck" id="deck">
-    {{- range $tools }}{{ partial "card.html" (dict "tool" . "hues" $hues "levels" $levels) }}{{ end }}
+  {{- /* Only the search stays on screen while scrolling through the cards. */}}
+  <div class="bar needs-js">
+    <div class="search" role="search">
+      <label class="sr-only" for="search">{{ T "search_label" }}</label>
+      <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="search" id="search" placeholder="{{ T "search_placeholder" }}" autocomplete="off">
+    </div>
   </div>
-  <p class="deck-hint needs-js"><strong>{{ T "deck_title" (len $tools) }}</strong><span>{{ T "deck_hint" }}</span></p>
-  <div class="empty" id="empty" hidden>
-    <p>{{ T "no_results" }}</p>
-    <button type="button" class="btn btn-primary" data-reset>{{ T "reset" }}</button>
-  </div>
-</main>
+
+  <main class="stage">
+    <div class="deck" id="deck" data-label="{{ T "deck_open" }}">
+      {{- range $tools }}{{ partial "card.html" (dict "tool" . "hues" $hues "levels" $levels) }}{{ end }}
+    </div>
+    {{- /* Draw the face-up card of the pile at random. Runs right here, before the first paint, so the pile never flickers. */}}
+    <script>{const c = document.querySelectorAll("#deck > .card"); c[Math.floor(Math.random() * c.length)]?.classList.add("top");}</script>
+    <div class="empty" id="empty" hidden>
+      <p>{{ T "no_results" }}</p>
+      <button type="button" class="btn btn-primary" data-reset>{{ T "reset" }}</button>
+    </div>
+  </main>
+</div>
 {{ end }}

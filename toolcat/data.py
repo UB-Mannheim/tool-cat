@@ -1,5 +1,3 @@
-"""Read data/genai_tools.xlsx, validate it and write the JSON that Hugo renders."""
-
 import json
 import re
 import unicodedata
@@ -10,13 +8,15 @@ from pathlib import Path
 import openpyxl
 
 REQUIRED = [
-    "title", "type", "description", "url", "notes", "use_cases", "service_location", "costs",
-    "is_account_required", "is_opensource", "for_OER_creation", "technical_skill_level",
+    "title", "type", "description_de", "description_en", "url", "notes_de", "notes_en", "use_cases",
+    "service_location", "costs", "is_account_required", "is_opensource", "for_OER_creation",
+    "technical_skill_level",
 ]
 BOOLS = {"account": "is_account_required", "opensource": "is_opensource", "oer": "for_OER_creation"}
-EEA = set(
-    "EU DE AT FR NL BE LU IT ES PT IE DK SE FI PL CZ SK SI HR HU RO BG GR CY MT EE LV LT NO IS LI".split()
-)
+EEA = [
+    "EU", "DE", "AT", "FR", "NL", "BE", "LU", "IT", "ES", "PT", "IE", "DK", "SE", "FI", "PL",
+    "CZ", "SK", "SI", "HR", "HU", "RO", "BG", "GR", "CY", "MT", "EE", "LV", "LT", "NO", "IS", "LI"
+]
 UMLAUTS = str.maketrans({"ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss", "Ä": "Ae", "Ö": "Oe", "Ü": "Ue"})
 
 
@@ -37,17 +37,22 @@ def slugify(text):
 
 
 def _rows(ws):
-    """Yield (row_number, {header: stripped string}) for every non-empty row below the header."""
+    """
+    Yield (row_number, {header: stripped string}) for every non-empty row below the header.
+    """
     rows = ws.iter_rows(values_only=True)
     headers = [str(h).strip() if h is not None else "" for h in next(rows, [])]
     for number, row in enumerate(rows, start=2):
         cells = ["" if c is None else str(c).strip() for c in row]
         if any(cells):
-            yield number, {h: c for h, c in zip(headers, cells) if h}
+            test = number, {h: c for h, c in zip(headers, cells) if h}
+            yield test
 
 
 def _picklists(ws):
-    """Return {column: [values]} with each list ending at its first blank cell."""
+    """
+    Return {column: [values]} with each list ending at its first blank cell.
+    """
     lists, done = {}, set()
     for _, row in _rows(ws):
         for header, value in row.items():
@@ -65,10 +70,16 @@ def _pairs(lists, name):
 
 
 def _vocab(lists):
+    """
+    Return controlled vocabularies from the .xslx
+    """
+    # Costs
     costs = _pairs(lists, "costs")
     for value in costs:
         if value["key"] == "no":
             value.update(key="free", en="free", de="kostenlos")
+
+    # Technical skills
     skill_de = lists.get("technical_skill_level_de", [])
     skills = []
     for i, key in enumerate(lists.get("technical_skill_level", [])):
@@ -76,7 +87,10 @@ def _vocab(lists):
         if i < len(skill_de):  # otherwise Hugo falls back to the i18n key skill_<value>
             value["de"] = skill_de[i]
         skills.append(value)
+
+    # Bool vocab
     yes_no = [{"key": "true"}, {"key": "false"}]  # labels come from the i18n files
+
     return [
         {"key": "type", "values": _pairs(lists, "type")},
         {"key": "use_cases", "values": _pairs(lists, "use_case")},
@@ -88,41 +102,46 @@ def _vocab(lists):
 
 
 def load(xlsx_path):
-    """Return (tools, vocab, issues) for the workbook at `xlsx_path`."""
+    """
+    Return (tools, vocab, issues) for the workbook at `xlsx_path`.
+    """
+    def pick(column, facet, value=None):
+        value = row[column] if value is None else value
+        if value not in allowed[facet]:
+            error(number, f"{column} '{row[column]}' is not in the picklists")
+        return value
+
     with warnings.catch_warnings():
-        warnings.simplefilter("ignore", UserWarning)  # openpyxl: unsupported data-validation extension
+        warnings.simplefilter("ignore", UserWarning)
         wb = openpyxl.load_workbook(xlsx_path, read_only=True, data_only=True)
-        lists = _picklists(wb["picklists"])
+        picklists = _picklists(wb["picklists"])
         rows = list(_rows(wb["tools"]))
+
     issues = []
     error = lambda row, message: issues.append(Issue("error", row, message))
-    vocab = _vocab(lists)
+
+    vocab = _vocab(picklists)
     allowed = {facet["key"]: [v["key"] for v in facet["values"]] for facet in vocab}
-    # "audio generation" in the tools sheet matches the picklist's "audio generation (text-to-speech)"
     use_cases = {re.sub(r"\s*\([^)]*\)$", "", key): key for key in allowed["use_cases"]}
     use_cases.update({key: key for key in allowed["use_cases"]})
-    bools = {v: v == "yes" for v in lists.get("bool", ["yes", "no"])}
+    bools = {v: v == "yes" for v in picklists.get("bool", ["yes", "no"])}
 
     missing = [h for h in REQUIRED if not rows or h not in rows[0][1]]
     if missing:
         error(None, f"missing required column(s) in sheet 'tools': {', '.join(missing)}")
         return [], vocab, issues
 
-    tools, seen, no_german = [], {}, 0
+    tools, seen = [], {}
+    missing_en_desc = missing_de_desc = 0
     for number, row in rows:
-        for field in ("title", "type", "description"):
+        for field in ("title", "type", "description_de", "description_en"):
             if not row[field]:
                 error(number, f"missing {field}")
+
         tool_id = slugify(row["title"])
         if tool_id and tool_id in seen:
             error(number, f"duplicate tool '{row['title']}' (same id as row {seen[tool_id]})")
         seen.setdefault(tool_id, number)
-
-        def pick(column, facet, value=None):
-            value = row[column] if value is None else value
-            if value not in allowed[facet]:
-                error(number, f"{column} '{row[column]}' is not in the picklists")
-            return value
 
         cases = []
         for part in filter(None, (p.strip() for p in row["use_cases"].split("*"))):
@@ -130,15 +149,19 @@ def load(xlsx_path):
                 cases.append(use_cases[part])
             else:
                 error(number, f"use case '{part}' is not in the picklists")
+
         flags = {}
         for key, column in BOOLS.items():
             if row[column] not in bools:
                 error(number, f"{column} '{row[column]}' must be yes or no")
             flags[key] = bools.get(row[column], False)
+
         url, location = row["url"], row["service_location"].upper()
         if not url.startswith("http"):
             issues.append(Issue("warning", number, f"url of '{row['title']}' is not a link: '{url}'"))
-        no_german += not row.get("description_de")
+
+        missing_en_desc += not row.get("description_en")
+        missing_de_desc += not row.get("description_de")
         tools.append({
             "id": tool_id, "title": row["title"], "url": url, "url_is_link": url.startswith("http"),
             "type": pick("type", "type"), "use_cases": cases,
@@ -146,12 +169,23 @@ def load(xlsx_path):
             "location_group": "local" if not location else "eea" if location in EEA else "non_eea",
             "costs": pick("costs", "costs", "free" if row["costs"] == "no" else row["costs"]),
             **flags, "skill": pick("technical_skill_level", "skill"),
-            "description": {"en": row["description"], "de": row.get("description_de") or None},
-            "notes": {"en": row["notes"], "de": row.get("notes_de") or None},
+            "description": {
+                "en": row.get("description_en") or None,
+                "de": row.get("description_de") or None
+            },
+            "notes": {"en": row.get("notes_en") or None, "de": row.get("notes_de") or None}
         })
-    if no_german:
-        issues.append(Issue("warning", None, f"{no_german} of {len(tools)} tools have no description_de"))
+
+    if missing_en_desc > 0 or missing_de_desc > 0:
+        issues.append(Issue(
+            "warning", None, (
+                f"{missing_en_desc} of {len(tools)} tools have no description_en and "
+                f"{missing_de_desc} of {len(tools)} tools have no description_de "
+            )
+        ))
+
     tools.sort(key=lambda tool: tool["title"].casefold())
+
     return tools, vocab, issues
 
 

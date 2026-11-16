@@ -33,7 +33,7 @@
     {{- range slice "oer" "costs" "account" "opensource" }}
     {{- $value := index $t . }}
     <div>
-      <dt class="label">{{ T (print "facet_" .) }}</dt>
+      {{ partial "attr-label.html" (dict "facet" . "card" (print "t-" $t.id)) }}
       {{- if eq . "costs" }}
       <dd><svg class="icon" aria-hidden="true"><use href="#i-tag"/></svg><span class="cap">{{ partial "label.html" (dict "facet" . "key" $value) }}</span></dd>
       {{- else }}
@@ -42,15 +42,15 @@
     </div>
     {{- end }}
     <div>
-      <dt class="label">{{ T "facet_location_group" }}</dt>
+      {{ partial "attr-label.html" (dict "facet" "location_group" "card" (print "t-" $t.id)) }}
       {{- if eq $t.location "local" }}
       <dd><svg class="icon" aria-hidden="true"><use href="#i-device"/></svg>{{ T "local" }}</dd>
       {{- else }}
-      <dd><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg>{{ T (print "country_" $t.location) | default $t.location }}<span class="sub">{{ T $t.location_group }}</span></dd>
+      <dd><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg>{{ T (print "country_" $t.location) | default $t.location }}</dd>
       {{- end }}
     </div>
     <div>
-      <dt class="label">{{ T "facet_skill" }}</dt>
+      {{ partial "attr-label.html" (dict "facet" "skill" "card" (print "t-" $t.id)) }}
       <dd><span class="meter" data-level="{{ index .levels $t.skill }}" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="cap">{{ partial "label.html" (dict "facet" "skill" "key" $t.skill) }}</span></dd>
     </div>
   </dl>

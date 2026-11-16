@@ -1,4 +1,5 @@
-/* tool-cat. Layout: pick a goal, then a pile of chunky playing cards that spreads into a grid when touched. */
+/* tool-cat. Layout: on load a pile of chunky playing cards on the left, title and intro beside it.
+   Touching the pile or opening the filters spreads it into a grid; the title shrinks into a header above the filters. */
 /* Colours follow the AiDaLi palette (data/stylesheet/stylesheet.pdf). */
 :root {
   --bg: #f4f8fb;        /* preferred neutral background */
@@ -13,10 +14,8 @@
   --accent: #1f4d77;    /* links and focus rings */
   --yes: #2ead8c;
   --no: #cb6685;
-  /* use-case colours: every blue, coral and green shade of the palette plus one navy tint, ordered so
-     that neighbours differ. Assigned by position in the picklist (see .hue-N); always with --tag-ink text. */
   --tag-0: #c6e8f8; --tag-1: #f9cec1; --tag-2: #c0e9dd; --tag-3: #7ec7eb; --tag-4: #ed8164;
-  --tag-5: #2ead8c; --tag-6: #e5f5fc; --tag-7: #f5b4a2; --tag-8: #a1dcca; --tag-9: #78a0b5;
+  --tag-5: #2ead8c; --tag-6: #e5f5fc; --tag-7: #f5b4a2; --tag-8: #a1dcca; --tag-9: #88d0e0;
   --tag-10: #f19a82; --tag-11: #81cfb7; --tag-12: #a3d9f2;
   --tag-ink: #003056;
 
@@ -47,6 +46,7 @@ body {
   color: var(--ink);
   font: 1rem/1.55 var(--font-body);
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip; /* trims the full-width band of the sticky search bar; unlike hidden it keeps sticky working */
 }
 body::before { /* keeps the band above the sticky bar opaque on phones with a system bar */
   content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
@@ -64,8 +64,8 @@ html:not(.js) .needs-js { display: none !important; }
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap;
 }
-.wrap {
-  max-width: var(--page); margin-inline: auto;
+.app {
+  max-width: var(--page); margin-inline: auto; padding-block: 1.25rem 0;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
@@ -85,6 +85,8 @@ html:not(.js) .needs-js { display: none !important; }
 .btn:hover { translate: -1px -1px; box-shadow: 3px 3px 0 var(--shadow); }
 .btn:active { translate: 1px 1px; box-shadow: 1px 1px 0 var(--shadow); }
 .btn-primary, .btn[aria-expanded="true"] { background: var(--pop); color: var(--pop-ink); }
+.btn-big { flex: none; min-height: 3.2rem; padding-inline: 1.5rem; font-size: 1.05rem; white-space: nowrap; box-shadow: 3px 3px 0 var(--shadow); }
+.btn-big:hover { box-shadow: 4px 4px 0 var(--shadow); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; translate: none; box-shadow: none; }
 .btn-link {
   border: 0; background: none; padding: 0; color: var(--accent); font-size: 0.9rem; font-weight: 700;
@@ -96,26 +98,49 @@ html:not(.js) .needs-js { display: none !important; }
 }
 .badge:empty { display: none; }
 
-/* Header */
-.site-head { padding-block: 1.25rem 0.5rem; }
-.site-head .wrap { display: grid; gap: 0.9rem; justify-items: start; }
-.lang-switch { justify-self: end; display: flex; border: 2px solid var(--edge); border-radius: 2rem; overflow: hidden; }
+/* Header. Open layout (and the page without JavaScript): a compact header with the language switch beside it. */
+.app { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 1.5rem; }
+.app > * { grid-column: 1 / -1; min-width: 0; }
+.app > .hero { grid-row: 1; grid-column: 1; }
+.app > .lang-switch { grid-row: 1; grid-column: 2; align-self: start; }
+.hero { display: grid; gap: 0.3rem; justify-items: start; padding-block: 0.2rem 0.4rem; }
+.lang-switch { display: flex; border: 2px solid var(--edge); border-radius: 2rem; overflow: hidden; }
 .lang-switch a {
   padding: 0.3rem 0.75rem; font: 700 0.8rem/1.4 var(--font-data); text-decoration: none; color: var(--ink);
   background: var(--surface);
 }
 .lang-switch a[aria-current] { background: var(--ink); color: var(--bg); }
-.site-title {
-  max-width: 18ch; font: 800 clamp(2.2rem, 1.3rem + 4.2vw, 4.4rem)/1.02 var(--font-display);
-  letter-spacing: -0.02em; text-wrap: balance;
+.site-title { font: 800 clamp(1.35rem, 1rem + 1.1vw, 1.9rem)/1.1 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
+.site-intro { max-width: 80ch; color: var(--muted); font-size: 0.93rem; }
+.hero-actions { display: none; }
+.deck-hint { flex: 0 1 auto; min-width: 0; color: var(--ink); font-size: 0.95rem; line-height: 1.35; text-wrap: balance; }
+
+/* Closed layout: the pile and the big title, nothing else. */
+html.js .app:not(.open) { grid-template-columns: minmax(0, 1fr); }
+html.js .app:not(.open) > .lang-switch { grid-row: 1; grid-column: 1; justify-self: end; }
+html.js .app:not(.open) > .hero { grid-row: 2; grid-column: 1; gap: 1rem; padding-block: 1.5rem 0; }
+html.js .app:not(.open) > .stage { grid-row: 3; grid-column: 1; }
+html.js .app:not(.open) > :is(.goals, .tools-row, .bar, .panel) { display: none; }
+html.js .app:not(.open) .site-title {
+  max-width: 16ch; font-size: clamp(2.2rem, 1.2rem + 3.4vw, 4.2rem); line-height: 1.02; letter-spacing: -0.02em;
 }
-.site-intro { max-width: 60ch; color: var(--muted); font-size: 1.08rem; }
+html.js .app:not(.open) .site-intro { max-width: 52ch; font-size: 1.08rem; }
+html.js .app:not(.open) .hero-actions { display: flex; align-items: center; gap: 1.25rem; margin-top: 0.6rem; }
+@media (min-width: 56rem) {
+  html.js .app:not(.open) {
+    grid-template-columns: 1fr minmax(0, 26rem) minmax(0, 42rem) 1fr; grid-template-rows: auto 1fr;
+    min-height: 100svh; padding-block: 1.25rem 2.5rem;
+  }
+  html.js .app:not(.open) > .lang-switch { grid-column: 1 / -1; }
+  html.js .app:not(.open) > .stage { grid-row: 2; grid-column: 2; align-self: center; }
+  html.js .app:not(.open) > .hero { grid-row: 2; grid-column: 3; align-self: center; padding: 0 0 0 clamp(2.5rem, 6vw, 6rem); }
+}
 
 /* Chips: the use cases up front, every other filter in the panel */
 .facet legend { float: left; width: 100%; margin-bottom: 0.6rem; }
 .chips { clear: both; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .chip {
-  display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.3rem 0.8rem;
+  position: relative; display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.3rem 0.8rem;
   border: 2px solid transparent; border-radius: 2rem; background-color: var(--surface); box-shadow: inset 0 0 0 1px var(--line);
   font-size: 0.9rem; line-height: 1.4; cursor: pointer; user-select: none;
 }
@@ -129,69 +154,78 @@ html:not(.js) .needs-js { display: none !important; }
 .chip.hue .n { color: inherit; }
 .chip.hue:has(input:checked) { background: var(--tag); color: var(--tag-ink); } /* a ticked use case keeps its own shade */
 .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.chip .n { font: 0.74rem var(--font-data); font-variant-numeric: tabular-nums; color: var(--muted); }
+.chip .n { min-width: 2ch; text-align: right; font: 0.74rem var(--font-data); font-variant-numeric: tabular-nums; color: var(--muted); }
 .chip:hover { border-color: var(--edge); }
+/* Ticking a chip must not change its width, or the rows reflow: no bolder text, and the tick sits on the corner. */
 .chip:has(input:checked) {
-  background: var(--pop); color: var(--pop-ink); border-color: var(--edge); font-weight: 700;
+  background: var(--pop); color: var(--pop-ink); border-color: var(--edge);
   box-shadow: 2px 2px 0 var(--shadow);
 }
-.chip:has(input:checked)::before { content: "✓"; font-weight: 800; }
+.chip:has(input:checked)::before {
+  content: "✓"; position: absolute; top: -0.5rem; left: -0.4rem; width: 1.2rem; height: 1.2rem;
+  border-radius: 50%; background: var(--ink); color: var(--bg); font: 800 0.7rem/1.2rem var(--font-body); text-align: center;
+}
 .chip:has(input:checked) .n { color: inherit; }
 .chip:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 3px; }
 .chip.zero:not(:has(input:checked)) { background: transparent; box-shadow: none; border: 2px dashed var(--line); color: var(--muted); }
 .chip.zero:not(:has(input:checked)) .n { color: inherit; }
 
-.goals { padding-block: 1.25rem 1.5rem; }
-.goals legend { font: 800 1.35rem/1.2 var(--font-display); margin-bottom: 0.8rem; }
-.goals .chip { padding: 0.5rem 1.05rem; font-size: 1rem; font-weight: 600; box-shadow: inset 0 0 0 1px rgb(0 48 86 / 0.14); }
+.goals { padding-block: 0.9rem 0.9rem; border-top: 2px dotted var(--line); margin-top: 0.6rem; }
+.goals legend { font: 800 1.1rem/1.2 var(--font-display); margin-bottom: 0.6rem; }
+.goals .chip { padding: 0.4rem 0.95rem; font-size: 0.95rem; font-weight: 600; box-shadow: inset 0 0 0 1px rgb(0 48 86 / 0.14); }
 .goals .chip:has(input:checked) { box-shadow: 3px 3px 0 var(--shadow); }
 
 /* Search bar */
 .bar {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1rem; padding-block: 0.7rem;
+}
+.bar::before { /* the band behind the bar runs from edge to edge of the window, so no card shows beside it */
+  content: ""; position: absolute; z-index: -1; inset-block: 0; inset-inline: calc(50% - 50vw);
   background: var(--bg); border-block: 2px solid var(--edge);
 }
-.bar .wrap { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1rem; padding-block: 0.7rem; }
-.search { position: relative; flex: 1 1 15rem; max-width: 32rem; min-width: 0; }
+.search { position: relative; flex: 1 1 15rem; max-width: 40rem; min-width: 0; }
 .search .icon { position: absolute; left: 1rem; top: 50%; translate: 0 -50%; pointer-events: none; }
 .search input {
   width: 100%; height: 2.9rem; padding: 0 1rem 0 2.7rem;
   border: 2px solid var(--edge); border-radius: 2rem; background: var(--surface);
 }
 .search input::placeholder { color: var(--muted); opacity: 1; }
-.count { font: 0.85rem/1.3 var(--font-data); font-variant-numeric: tabular-nums; color: var(--muted); }
-.bar-actions { display: flex; align-items: center; gap: 1rem; margin-left: auto; }
+/* The row under the use cases: more filters, start over, and how many tools are left */
+.tools-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1.25rem; padding-block: 0 1rem; }
+.count { margin-left: auto; font: 0.85rem/1.3 var(--font-data); font-variant-numeric: tabular-nums; color: var(--muted); }
 
 /* More filters (collapsed until asked for) */
 .panel {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1.25rem 2rem;
-  margin-top: 1.25rem; padding: 1.25rem; background: var(--surface);
+  margin-bottom: 1.25rem; padding: 1.25rem; background: var(--surface);
   border: 2px solid var(--edge); border-radius: var(--radius); box-shadow: 4px 4px 0 var(--shadow);
 }
 
-/* The deck: a pile until someone hovers, taps, tabs in, searches or filters; then a grid. */
+/* The deck: a pile until someone hovers, taps, tabs in or opens the filters; then a grid. */
 .stage { padding-block: 2rem 3.5rem; }
 .deck { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19.5rem), 1fr)); gap: 1.25rem; }
-.deck-hint { display: none; }
-html.js .stage:has(.deck:not(.open)) { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem 4rem; padding-block: 3rem 4rem; }
-html.js .deck:not(.open) { display: block; position: relative; flex: 0 0 min(21rem, 100% - 5rem); height: 23rem; margin-inline: 2.5rem; cursor: pointer; }
-html.js .deck:not(.open) .card {
+html.js .app:not(.open) > .stage { padding-block: 2.5rem 3rem; }
+html.js .app:not(.open) .deck {
+  display: block; position: relative; width: min(21rem, 100% - 5rem); height: 23rem; margin-inline: auto; cursor: pointer;
+}
+html.js .app:not(.open) .deck:focus-visible { outline-offset: 1.5rem; border-radius: var(--radius); }
+html.js .app:not(.open) .card {
   position: absolute; inset: 0; overflow: hidden; pointer-events: none;
   rotate: var(--tilt, 0deg); translate: var(--dx, 0) var(--dy, 0);
 }
-html.js .deck:not(.open) .card :is(.attrs, .card-note) { display: none; }
-html.js .deck:not(.open) .card-desc { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
-html.js .deck:not(.open) .tags { max-height: 3.5rem; overflow: hidden; }
+html.js .app:not(.open) .card :is(.attrs, .card-note) { display: none; }
+html.js .app:not(.open) .card-desc { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
+html.js .app:not(.open) .tags { max-height: 3.5rem; overflow: hidden; }
 .card:nth-child(5n + 1) { --tilt: -7deg; --dx: -10px; }
 .card:nth-child(5n + 2) { --tilt: 5deg; --dx: 12px; --dy: 4px; }
 .card:nth-child(5n + 3) { --tilt: -3deg; --dy: -6px; }
 .card:nth-child(5n + 4) { --tilt: 9deg; --dx: 6px; --dy: 8px; }
 .card:nth-child(5n) { --tilt: -11deg; --dx: -4px; --dy: 6px; }
-.card:first-child { --tilt: -2deg; --dx: 0px; --dy: 0px; z-index: 1; }
-html.js .deck:not(.open):hover .card:first-child { --tilt: 1deg; --dy: -8px; }
-html.js .stage:has(.deck:not(.open)) .deck-hint { display: block; flex: 1 1 18rem; max-width: 30rem; }
-.deck-hint strong { display: block; font: 800 clamp(1.7rem, 1.2rem + 2vw, 2.6rem)/1.08 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
-.deck-hint span { display: block; margin-top: 0.6rem; color: var(--muted); font-size: 1.05rem; }
+/* The face-up card is drawn at random on every page load (see home.html). */
+.card.top { --tilt: -2deg; --dx: 0px; --dy: 0px; z-index: 1; }
+html.js .app:not(.open) .deck:hover .card.top,
+html.js .app:not(.open):has(#browse:hover) .card.top { --tilt: 1deg; --dy: -8px; }
 
 /* Cards */
 .card {
@@ -199,7 +233,7 @@ html.js .stage:has(.deck:not(.open)) .deck-hint { display: block; flex: 1 1 18re
   background: var(--surface); border: 2px solid var(--edge); border-radius: var(--radius);
   box-shadow: 4px 4px 0 var(--shadow);
 }
-.deck.open .card:hover { translate: -2px -2px; box-shadow: 6px 6px 0 var(--shadow); }
+.app.open .card:hover { translate: -2px -2px; box-shadow: 6px 6px 0 var(--shadow); }
 .card-title { font: 800 1.45rem/1.15 var(--font-display); overflow-wrap: anywhere; }
 .card-title a { color: inherit; text-decoration: none; }
 .card-title a:hover { text-decoration: underline; text-decoration-thickness: 3px; text-decoration-color: var(--pop); }
@@ -213,8 +247,25 @@ html.js .stage:has(.deck:not(.open)) .deck-hint { display: block; flex: 1 1 18re
 .attrs div { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding-block: 0.3rem; }
 .attrs div + div { border-top: 1px solid color-mix(in srgb, var(--line) 45%, transparent); }
 .attrs dd { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 0 0.4rem; text-align: right; font-size: 0.9rem; font-weight: 700; }
-.attrs .sub { font-size: 0.8rem; font-weight: 400; color: var(--muted); }
 .attrs .icon { color: var(--muted); align-self: center; }
+/* Tooltips on the detail labels: hover, keyboard focus or a tap shows them; they stay open while the pointer is on them. */
+.attrs dt { position: relative; }
+.hint { cursor: help; border-radius: 3px; }
+.hint:focus { outline: none; }
+.hint:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tip {
+  position: absolute; left: -0.5rem; bottom: calc(100% + 0.55rem); z-index: 3;
+  width: max-content; max-width: min(17rem, 100vw - 3rem); padding: 0.55rem 0.75rem;
+  background: var(--surface); color: var(--ink); border: 2px solid var(--edge); border-radius: 0.6rem;
+  box-shadow: 3px 3px 0 var(--shadow);
+  font: 400 0.85rem/1.45 var(--font-body); letter-spacing: normal; text-transform: none;
+  visibility: hidden; opacity: 0; translate: 0 4px; pointer-events: none;
+}
+.tip::after { /* bridges the gap to the label, so the pointer can move onto the tooltip */
+  content: ""; position: absolute; inset: 100% 0 auto; height: 0.75rem;
+}
+.attrs dt:hover .tip, .hint:focus + .tip { visibility: visible; opacity: 1; translate: 0 0; pointer-events: auto; }
+.card:has(.attrs dt:hover, .hint:focus) { z-index: 2; } /* the tooltip may reach over the card above */
 .is-true .icon { color: var(--yes); }
 .is-false .icon { color: var(--no); }
 .meter { display: inline-flex; align-items: flex-end; gap: 2px; height: 0.85em; }
@@ -227,12 +278,15 @@ html.js .stage:has(.deck:not(.open)) .deck-hint { display: block; flex: 1 1 18re
 .empty p { margin-bottom: 1rem; font: 800 1.4rem var(--font-display); }
 
 @media (max-width: 40rem) {
-  .count { order: 3; flex-basis: 100%; }
   .goals .chip { padding: 0.3rem 0.7rem; font-size: 0.85rem; }
   .goals .chips { gap: 0.4rem; }
-  html.js .deck:not(.open) { margin-inline: auto; flex-basis: min(19rem, 100% - 4rem); }
+  html.js .app:not(.open) .deck { width: min(19rem, 100% - 4rem); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  html.js .deck:not(.open) .card:first-child { transition: translate 0.25s, rotate 0.25s; }
-  .chip, .btn, .deck.open .card { transition: translate 0.15s, box-shadow 0.15s, background-color 0.15s, border-color 0.15s; }
+  html.js .app:not(.open) .card.top { transition: translate 0.25s, rotate 0.25s; }
+  .tip { transition: opacity 0.15s, translate 0.15s, visibility 0.15s; }
+  .chip, .btn, .app.open .card { transition: translate 0.15s, box-shadow 0.15s, background-color 0.15s, border-color 0.15s; }
+  /* Opening: the title shrinks into the header (app.js), the filters drop in. */
+  html.js .app.open > :is(.goals, .tools-row, .bar) { animation: drop-in 0.45s 0.15s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
 }
+@keyframes drop-in { from { opacity: 0; translate: 0 -10px; } }

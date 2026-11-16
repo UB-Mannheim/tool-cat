@@ -4,11 +4,20 @@ search_label = "Tools durchsuchen"
 search_placeholder = "Suche nach Name, Anwendungszweck oder Beschreibung"
 prompt = "Anwendungszwecke"
 filters = "Weitere Filter"
-reset = "Neu starten"
+reset = "Filter zurücksetzen"
 no_results = "Kein Tool passt zu Suche und Filtern."
-deck_hint = "Fahren Sie mit der Maus über den Stapel oder tippen Sie ihn an, um die Karten aufzufächern. Oder wählen Sie oben ein Ziel."
+deck_open = "Karten auffächern"
+browse = "Tools filtern"
 visit_tool = "öffnet die Website des Tools"
 language_switch = "Sprache"
+
+# Tooltips zu den Angaben auf jeder Karte (die Zeilen unter der gepunkteten Linie)
+tip_oer = "Ob sich die Ergebnisse des Tools in Open Educational Resources verwenden lassen, etwa weil die Nutzungsbedingungen eine Veröffentlichung unter offener Lizenz erlauben."
+tip_costs = "Was die Nutzung kostet. Kostenlos: keine Gebühren. Freemium: kostenlose Grundversion mit kostenpflichtigen Erweiterungen. Bezahlversion: Abo oder Lizenz erforderlich."
+tip_account = "Ob Sie sich registrieren müssen, bevor Sie das Tool nutzen können."
+tip_opensource = "Ob der Quellcode unter einer Open-Source-Lizenz veröffentlicht ist, sodass ihn alle einsehen, nutzen und anpassen können."
+tip_location_group = "Wo der Anbieter den Dienst betreibt und Ihre Daten verarbeitet. Bei „Eigener PC“ bleiben Ihre Daten auf Ihrem Rechner."
+tip_skill = "Wie viel technisches Wissen Sie für den Einstieg brauchen, von gering bis Expertenwissen."
 
 # {n} und {total} setzt der Browser ein.
 [results]
@@ -23,7 +32,7 @@ other = "Art"
 [facet_use_cases]
 other = "Einsatzzwecke"
 [facet_location_group]
-other = "Standort des Dienstes"
+other = "Service-Standort"
 [facet_costs]
 other = "Kosten"
 [facet_account]
@@ -40,11 +49,11 @@ other = "ja"
 [false]
 other = "nein"
 [local]
-other = "Läuft auf dem eigenen Gerät"
+other = "Eigener PC"
 [eea]
-other = "EU/EWR"
+other = "EU"
 [non_eea]
-other = "Außerhalb EU/EWR"
+other = "Welt"
 [skill_low]
 other = "gering"
 [skill_basic]
@@ -59,7 +68,7 @@ other = "Deutschland"
 [country_US]
 other = "USA"
 [country_EU]
-other = "Europäische Union"
+other = "EU"
 [country_NO]
 other = "Norwegen"
 [country_AT]

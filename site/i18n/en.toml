@@ -5,11 +5,20 @@ search_label = "Search tools"
 search_placeholder = "Search by name, purpose or description"
 prompt = "What would you like to do?"
 filters = "More filters"
-reset = "Start over"
+reset = "Reset filters"
 no_results = "No tool matches your search and filters."
-deck_hint = "Hover over the pile or tap it to spread the cards out. Or pick a goal above and see what turns up."
+deck_open = "Spread out the cards"
+browse = "Filter tools"
 visit_tool = "opens the tool's website"
 language_switch = "Language"
+
+# Tooltips on the details of each card (the rows below the dotted line)
+tip_oer = "Whether you can use what the tool produces in Open Educational Resources, for example because its terms allow publishing results under an open licence."
+tip_costs = "What it costs to use the tool. Free: no charge. Freemium: a free version with paid upgrades. Paid: a subscription or licence is required."
+tip_account = "Whether you have to sign up before you can use the tool."
+tip_opensource = "Whether the source code is published under an open-source licence, so anyone can inspect, run and adapt it."
+tip_location_group = "Where the provider runs the service and processes your data. Tools that run on your device keep your data on your computer."
+tip_skill = "How much technical know-how you need to get started, from low to expert."
 
 # {n} and {total} are filled in by the browser.
 [results]
@@ -43,11 +52,11 @@ other = "yes"
 [false]
 other = "no"
 [local]
-other = "Runs on your device"
+other = "Local PC"
 [eea]
-other = "EU/EEA"
+other = "EU"
 [non_eea]
-other = "Outside EU/EEA"
+other = "World"
 [skill_low]
 other = "low"
 [skill_basic]

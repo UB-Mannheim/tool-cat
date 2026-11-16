@@ -13,14 +13,18 @@ SITE = ROOT / "site"
 
 
 def check():
-    """Load and validate the workbook, print the issues, exit 1 on errors."""
+    """
+    Load and validate the workbook, print the issues, exit 1 on errors.
+    """
     tools, vocab, issues = data.load(XLSX)
     for issue in issues:
         print(issue, file=sys.stderr)
+    
     errors = sum(issue.level == "error" for issue in issues)
     print(f"{len(tools)} tools, {errors} errors, {len(issues) - errors} warnings")
     if errors:
         sys.exit(1)
+
     return tools, vocab
 
 
@@ -33,12 +37,21 @@ def main():
     commands.add_parser("serve", help="validate, write JSON and start the Hugo dev server")
     args = parser.parse_args()
 
+    # Check and validate the .xlsx
     tools, vocab = check()
+
     if args.command == "check":
         return
+
+    # Write the .json content
     data.write(tools, vocab, SITE / "data")
+
     if args.command == "build":
         base = ["--baseURL", args.base_url] if args.base_url else []
         subprocess.run(["hugo", "--minify", "-s", str(SITE), *base], check=True)
     else:
         subprocess.run(["hugo", "server", "-s", str(SITE), "--bind", "0.0.0.0"], check=True)
+
+
+if __name__ == "__main__":
+    main()
