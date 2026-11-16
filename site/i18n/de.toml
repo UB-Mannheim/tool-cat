@@ -1,4 +1,4 @@
-title = "KI-Tools für die Lehre und Erstellung von OER"
+title = "KI-Tools für die Lehre und OER-Produktion"
 intro = "Eine Sammlung ausgewählter generativer KI-Tools für die universitäre Lehre und die Erstellung von Open Educational Resources (OER). Zusammengetragen im Projekt [AiDaLi](https://www.uni-mannheim.de/zll/projekte/aidali-durch-oer-produktion-zu-ai-und-data-literacy/) der [Universität Mannheim](https://www.uni-mannheim.de/)."
 search_label = "Tools durchsuchen"
 search_placeholder = "Suche nach Name, Anwendungszweck oder Beschreibung"
@@ -10,6 +10,14 @@ deck_open = "Karten auffächern"
 browse = "Tools filtern"
 visit_tool = "öffnet die Website des Tools"
 language_switch = "Sprache"
+
+# Alternativtexte der Logos in der Fußzeile
+logo_uma = "Universität Mannheim"
+logo_ub = "Universitätsbibliothek Mannheim"
+logo_stiftung = "Gefördert durch die Stiftung Innovation in der Hochschullehre"
+logo_uma_url = "https://www.uni-mannheim.de/"
+logo_ub_url = "https://www.bib.uni-mannheim.de/"
+logo_stiftung_url = "https://stiftung-hochschullehre.de/"
 
 # Tooltips zu den Angaben auf jeder Karte (die Zeilen unter der gepunkteten Linie)
 tip_oer = "Ob sich die Ergebnisse des Tools in Open Educational Resources verwenden lassen, etwa weil die Nutzungsbedingungen eine Veröffentlichung unter offener Lizenz erlauben."

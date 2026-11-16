@@ -126,11 +126,13 @@ html.js .app:not(.open) .site-title {
 }
 html.js .app:not(.open) .site-intro { max-width: 52ch; font-size: 1.08rem; }
 html.js .app:not(.open) .hero-actions { display: flex; align-items: center; gap: 1.25rem; margin-top: 0.6rem; }
+html.js .app:not(.open) > .site-footer { grid-row: 4; grid-column: 1; }
 @media (min-width: 56rem) {
   html.js .app:not(.open) {
-    grid-template-columns: 1fr minmax(0, 26rem) minmax(0, 42rem) 1fr; grid-template-rows: auto 1fr;
-    min-height: 100svh; padding-block: 1.25rem 2.5rem;
+    grid-template-columns: 1fr minmax(0, 26rem) minmax(0, 42rem) 1fr; grid-template-rows: auto 1fr auto;
+    min-height: 100svh; padding-block: 1.25rem 0;
   }
+  html.js .app:not(.open) > .site-footer { grid-row: 3; grid-column: 1 / -1; }
   html.js .app:not(.open) > .lang-switch { grid-column: 1 / -1; }
   html.js .app:not(.open) > .stage { grid-row: 2; grid-column: 2; align-self: center; }
   html.js .app:not(.open) > .hero { grid-row: 2; grid-column: 3; align-self: center; padding: 0 0 0 clamp(2.5rem, 6vw, 6rem); }
@@ -277,7 +279,28 @@ html.js .app:not(.open):has(#browse:hover) .card.top { --tilt: 1deg; --dy: -8px;
 .empty { padding: 3rem 1rem; text-align: center; border: 2px dashed var(--edge); border-radius: var(--radius); }
 .empty p { margin-bottom: 1rem; font: 800 1.4rem var(--font-display); }
 
+/* Footer: the logos on the right, in the closed and the open layout alike. */
+.site-footer {
+  display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 1rem 2rem;
+  padding-block: 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px)); border-top: 2px dotted var(--line);
+}
+.footer-logos { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 1rem 2rem; }
+.footer-logos li, .footer-logos a { display: flex; }
+.footer-logos a { border-radius: 0.5rem; }
+
+/* Every logo keeps its aspect ratio: set the height and leave the width on auto, or cap it with max-width. */
+.site-footer .logo { display: block; width: auto; height: 3rem; max-width: 100%; mix-blend-mode: multiply; } /* multiply drops the white box of the JPG on the page background */
+.site-footer .logo-uma { height: 2.6rem; width: auto; }
+.site-footer .logo-ub { height: 3rem; width: auto; }
+.site-footer .logo-stiftung { height: 4.5rem; width: auto; } /* the file has a wide white margin, so it needs more height to match */
+/* Dark mode: the logos are dark ink on white, so they get a white plate. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .site-footer .logo { mix-blend-mode: normal; padding: 0.35rem 0.5rem; background: #fff; border-radius: 0.5rem; box-sizing: content-box; }
+}
+:root[data-theme="dark"] .site-footer .logo { mix-blend-mode: normal; padding: 0.35rem 0.5rem; background: #fff; border-radius: 0.5rem; box-sizing: content-box; }
+
 @media (max-width: 40rem) {
+  .site-footer, .footer-logos { justify-content: center; }
   .goals .chip { padding: 0.3rem 0.7rem; font-size: 0.85rem; }
   .goals .chips { gap: 0.4rem; }
   html.js .app:not(.open) .deck { width: min(19rem, 100% - 4rem); }

@@ -1,0 +1,16 @@
+{{- /* Logos sit on the right. Each has its own class (logo-…), so main.css can size it on its own.
+       Alt texts and link targets come from i18n, so each language can link to its own version of a site. */}}
+{{- $logos := slice
+  (dict "src" "img/UMA.svg" "class" "logo-uma" "alt" (T "logo_uma") "href" (T "logo_uma_url"))
+  (dict "src" "img/UB.png" "class" "logo-ub" "alt" (T "logo_ub") "href" (T "logo_ub_url"))
+  (dict "src" "img/csm_Logo_Stiftung_Hochschullehre_pos-Gefoerdert-durch_093bad8e25.jpg" "class" "logo-stiftung" "alt" (T "logo_stiftung") "href" (T "logo_stiftung_url"))
+}}
+<footer class="site-footer">
+  <ul class="footer-logos">
+    {{- range $logo := $logos }}
+    {{- with resources.Get $logo.src | fingerprint }}
+    <li><a href="{{ $logo.href }}" target="_blank" rel="noopener"><img class="logo {{ $logo.class }}" src="{{ .RelPermalink }}" alt="{{ $logo.alt }}" decoding="async"></a></li>
+    {{- end }}
+    {{- end }}
+  </ul>
+</footer>

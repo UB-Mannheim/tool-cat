@@ -1,6 +1,6 @@
 # Interface texts. Labels for type, use case and costs come from the spreadsheet's picklists.
-title = "Discover great AI tools for teaching and OER"
-intro = "Hand-picked generative AI tools for research, teaching and creating Open Educational Resources. Pick what you want to get done, flip through the cards and find your new favourites."
+title = "Discover AI tools for teaching and OER"
+intro = "A collection of generative AI tools for university teaching and the creation of Open Educational Resources (OER). Compiled as part of the [AiDaLi](https://www.uni-mannheim.de/en/teaching-and-learning-center-zll/projects/aidali-creating-oer-to-build-ai-and-data-literacy/) project at the [University of Mannheim](https://www.uni-mannheim.de/en/)."
 search_label = "Search tools"
 search_placeholder = "Search by name, purpose or description"
 prompt = "What would you like to do?"
@@ -11,6 +11,14 @@ deck_open = "Spread out the cards"
 browse = "Filter tools"
 visit_tool = "opens the tool's website"
 language_switch = "Language"
+
+# Alt texts of the logos in the footer
+logo_uma = "University of Mannheim"
+logo_ub = "Mannheim University Library"
+logo_stiftung = "Funded by the Stiftung Innovation in der Hochschullehre"
+logo_uma_url = "https://www.uni-mannheim.de/en/"
+logo_ub_url = "https://www.bib.uni-mannheim.de/en/"
+logo_stiftung_url = "https://stiftung-hochschullehre.de/"
 
 # Tooltips on the details of each card (the rows below the dotted line)
 tip_oer = "Whether you can use what the tool produces in Open Educational Resources, for example because its terms allow publishing results under an open licence."

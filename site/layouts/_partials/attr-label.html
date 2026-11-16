@@ -1,0 +1,8 @@
+{{- /* Label of one card detail with its tooltip. Call with (dict "facet" "costs" "card" "t-chatgpt").
+       The tooltip text is tip_<facet> in site/i18n/en.toml and de.toml. It shows on hover, on keyboard focus and on tap. */ -}}
+{{- $id := print "tip-" .card "-" .facet }}
+<dt class="label">
+  <span class="hint" tabindex="0" aria-describedby="{{ $id }}">{{ T (print "facet_" .facet) }}</span>
+  <span class="tip" role="tooltip" id="{{ $id }}">{{ T (print "tip_" .facet) }}</span>
+</dt>
+{{- /**/ -}}
