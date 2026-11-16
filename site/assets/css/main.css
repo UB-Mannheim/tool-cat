@@ -205,9 +205,9 @@ html.js .app:not(.open) > .site-footer { grid-row: 4; grid-column: 1; }
 }
 
 /* The deck: a pile until someone hovers, taps, tabs in or opens the filters; then a grid. */
-.stage { padding-block: 2rem 3.5rem; }
+.stage { padding-block: 1rem 3.5rem; }
 .deck { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19.5rem), 1fr)); gap: 1.25rem; }
-html.js .app:not(.open) > .stage { padding-block: 2.5rem 3rem; }
+html.js .app:not(.open) > .stage { padding-block: 1rem 3rem; }
 html.js .app:not(.open) .deck {
   display: block; position: relative; width: min(21rem, 100% - 5rem); height: 23rem; margin-inline: auto; cursor: pointer;
 }
