@@ -39,6 +39,15 @@ def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
+def _notes(text) -> list[str]:
+    """
+    Split a notes cell into one note per line, dropping blank lines. Return None if nothing is left.
+
+    Example: _notes("Needs an account.\\n\\nGerman only.") -> ["Needs an account.", "German only."]
+    """
+    return [line.strip() for line in text.splitlines() if line.strip()] or None
+
+
 def _rows(ws: ReadOnlyWorksheet) -> Iterator[tuple[int, dict[str, str]]]:
     """
     Yield each non-empty row below the header row as (row_number, {header: value}).
@@ -143,7 +152,8 @@ def load(xlsx_path):
     - Costs "no" becomes "free".
     - A blank location means "local", and locations are grouped as local, eea or non_eea.
     - yes/no columns become booleans.
-    - Descriptions and notes become {"en": ..., "de": ...}, with blanks as None.
+    - Descriptions and notes become {"en": ..., "de": ...}, with blanks as None. Notes are split
+      into a list with one note per line of the cell.
 
     Problems do not raise. They are collected as issues, where errors fail the build and warnings
     are only printed. If a required column is missing, no tools are returned. Tools are sorted by
@@ -228,7 +238,7 @@ def load(xlsx_path):
             "costs": pick("costs", "costs", "free" if row["costs"] == "no" else row["costs"]),
             **flags, "skill": pick("technical_skill_level", "skill"),
             "description": {"en": row["description_en"] or None, "de": row["description_de"] or None},
-            "notes": {"en": row["notes_en"] or None, "de": row["notes_de"] or None},
+            "notes": {"en": _notes(row["notes_en"]), "de": _notes(row["notes_de"])},
         })
 
     if untranslated := sum(not tool["description"]["de"] for tool in tools):

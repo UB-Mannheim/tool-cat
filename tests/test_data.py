@@ -62,7 +62,7 @@ def test_basic_row(load):
         "location_group": "non_eea", "costs": "freemium", "account": True, "opensource": False,
         "oer": False, "skill": "low",
         "description": {"en": "Finds papers.", "de": "Fachartikel finden."},
-        "notes": {"en": None, "de": "Braucht ein Abo."},
+        "notes": {"en": None, "de": ["Braucht ein Abo."]},
     }
     assert [facet["key"] for facet in vocab] == [
         "type", "use_cases", "location_group", "costs", "account", "opensource", "oer", "skill",
@@ -139,6 +139,12 @@ def test_blank_notes_are_null(load):
     tools, _, issues = load(tool(notes_de=None))
     assert not issues
     assert tools[0]["notes"] == {"en": None, "de": None}
+
+
+def test_notes_are_split_per_line(load):
+    tools, _, issues = load(tool(notes_en="Needs an account.\r\n\n  Slow at peak times. ", notes_de="Eine Notiz."))
+    assert not issues
+    assert tools[0]["notes"] == {"en": ["Needs an account.", "Slow at peak times."], "de": ["Eine Notiz."]}
 
 
 def test_reordered_columns_and_sorting(load):

@@ -53,6 +53,7 @@ Run `uv run tool-cat check` and `uv run pytest` after changing `toolcat/`.
 - **Data rules in `load()`:**
   - Tool `id` is `slugify(title)`, which transliterates umlauts. Duplicate ids are errors.
   - `title`, `type` and `description_en` must be filled in. A blank `description_de` is allowed and only counted in a single warning.
+  - `notes_en`/`notes_de` hold one note per line of the cell and become lists. The card shows each note with its own `※`.
   - `use_cases` are separated by `*`. A use case matches a picklist entry with or without its trailing parenthetical.
   - `costs = "no"` becomes `"free"` / `"kostenlos"`.
   - Blank `service_location` means `local`. Codes in `EEA` are grouped as `eea` and all others as `non_eea`.
