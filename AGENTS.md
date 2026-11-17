@@ -34,6 +34,7 @@ Run `uv run tool-cat check` and `uv run pytest` after changing `toolcat/`.
 
 | Path | Purpose |
 | --- | --- |
+| `data/genai_tools.xlsx` | Source workbook with the `tools` and `picklists` sheets |
 | `toolcat/__init__.py` | CLI (`check`, `build`, `serve`) and paths |
 | `toolcat/data.py` | Workbook parsing, validation, vocabularies, JSON output |
 | `tests/test_data.py` | pytest tests that build small workbooks with openpyxl in `tmp_path` |
@@ -46,11 +47,12 @@ Run `uv run tool-cat check` and `uv run pytest` after changing `toolcat/`.
 ## Conventions and gotchas
 
 - **Data is the source of truth.** Tool content belongs in the spreadsheet. Don't hard-code it in templates or JSON. `site/data/*.json` is generated, so never edit or commit it.
-- **`data/` is gitignored.** The workbook isn't in the repo, so don't try to commit it or assume it exists in a fresh clone.
+- **The workbook is committed.** The Pages workflow builds from `data/genai_tools.xlsx`, so changes to it are deployed on the next push to `main`. Only `data/stylesheet/stylesheet.pdf` (the palette reference) is gitignored.
 - **Keep both languages in sync.** A new interface string goes into both `site/i18n/de.toml` and `site/i18n/en.toml`. Missing German descriptions or notes fall back to English, and the card marks them with `lang="en"`.
 - **Facet keys must match across layers.** The vocab keys in `data.py` (`type`, `use_cases`, `location_group`, `costs`, `account`, `opensource`, `oer`, `skill`) appear as `data-*` attributes in `card.html`, as `.facet[data-facet]` in `filters.html`, and in `app.js`. Rename one and you must rename them all.
 - **Data rules in `load()`:**
   - Tool `id` is `slugify(title)`, which transliterates umlauts. Duplicate ids are errors.
+  - `title`, `type` and `description_en` must be filled in. A blank `description_de` is allowed and only counted in a single warning.
   - `use_cases` are separated by `*`. A use case matches a picklist entry with or without its trailing parenthetical.
   - `costs = "no"` becomes `"free"` / `"kostenlos"`.
   - Blank `service_location` means `local`. Codes in `EEA` are grouped as `eea` and all others as `non_eea`.
