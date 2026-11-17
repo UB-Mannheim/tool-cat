@@ -20,5 +20,5 @@ site/resources/
 site/data/*.json
 .hugo_build.lock
 
-# AiDaLi palette reference
+# AiDaLi stylesheet
 data/stylesheet/stylesheet.pdf
