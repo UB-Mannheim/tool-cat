@@ -43,6 +43,7 @@ Run `uv run tool-cat check` and `uv run pytest` after changing `toolcat/`.
 | `site/i18n/{de,en}.toml` | Interface strings. Spreadsheet labels (type, use case, costs) come from the picklists instead |
 | `site/assets/` | `css/main.css`, `js/app.js` (search and filters), `img/` (logos) |
 | `.github/workflows/pages.yml` | Builds and deploys to GitHub Pages on push to `main` |
+| `.github/ISSUE_TEMPLATE/new-tool-{en,de}.yml` | Issue forms for suggesting a tool, one per language |
 
 ## Conventions and gotchas
 
@@ -59,6 +60,7 @@ Run `uv run tool-cat check` and `uv run pytest` after changing `toolcat/`.
   - Blank `service_location` means `local`. Codes in `EEA` are grouped as `eea` and all others as `non_eea`.
   - Boolean columns must be `yes`/`no` (taken from the `bool` picklist).
   - Tools are sorted by title, ignoring case.
+- **Issue forms mirror the picklists.** The dropdowns in `.github/ISSUE_TEMPLATE/new-tool-{en,de}.yml` copy the picklist values by hand, and each adds an `unsure`/`unsicher` option. When you change a picklist, update both forms.
 - **Tests:** the `HEADERS`/`tool()` fixture in `tests/test_data.py` must mirror `REQUIRED` in `data.py`. Update both when you add or rename a column.
 - **Filtering logic (`app.js`):** values within one facet are ORed, while facets and search terms are ANDed. An option's count is the number of results you would get by ticking it.
 - **Style:** Python ≥ 3.13 with standard library plus `openpyxl` only. Write small functions with short docstrings. Front-end code is vanilla JS and CSS with no build step beyond Hugo's `minify | fingerprint`. Don't add frameworks or new dependencies without asking.

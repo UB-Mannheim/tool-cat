@@ -1,0 +1,164 @@
+name: Suggest a new tool (English)
+description: Propose an AI tool for the catalogue. Pick "unsure" whenever you don't know an answer.
+title: "[New tool]: "
+labels: ["new tool"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a tool! Fill in what you know and pick **unsure** for anything you don't. We check every entry before adding it.
+        *Lieber auf Deutsch? Use the template "Neues Tool vorschlagen (Deutsch)" instead.*
+
+  - type: input
+    id: title
+    attributes:
+      label: Tool name
+      placeholder: e.g. Elicit
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Website
+      placeholder: https://
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What does the tool do? Two or three sentences are enough.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - cloud service
+        - app
+        - unsure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: use_cases
+    attributes:
+      label: Use cases
+      description: Select all that apply.
+      multiple: true
+      options:
+        - literature research
+        - writing assistant
+        - manuscript review
+        - translation
+        - chatbot (general)
+        - image generation
+        - audio generation (text-to-speech)
+        - audio transcription (speech-to-text)
+        - video generation
+        - text generation
+        - presentation generation
+        - chat with PDF
+        - exam preparation
+        - unsure
+    validations:
+      required: true
+
+  - type: input
+    id: other_use_case
+    attributes:
+      label: Other use case
+      description: Optional. Describe a use case that is missing from the list above.
+
+  - type: dropdown
+    id: location_group
+    attributes:
+      label: Service location
+      description: Where does the provider run the service and process user data?
+      options:
+        - Local PC (runs on your own computer)
+        - EU
+        - World (outside the EU)
+        - unsure
+    validations:
+      required: true
+
+  - type: input
+    id: service_location
+    attributes:
+      label: Country
+      description: Optional. Country code of the service location, if you know it.
+      placeholder: e.g. DE, US
+
+  - type: dropdown
+    id: costs
+    attributes:
+      label: Costs
+      description: "Free: no fees. Freemium: free basic version with paid extras. Paid: subscription or licence required."
+      options:
+        - free
+        - freemium
+        - paid
+        - unsure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: is_account_required
+    attributes:
+      label: Account required
+      description: Do you have to register with the provider to use the tool?
+      options:
+        - "yes"
+        - "no"
+        - unsure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: is_opensource
+    attributes:
+      label: Open source
+      description: Is the source code published under an open-source licence?
+      options:
+        - "yes"
+        - "no"
+        - unsure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: for_OER_creation
+    attributes:
+      label: Suitable for OER
+      description: Is the tool suitable for creating Open Educational Resources?
+      options:
+        - "yes"
+        - "no"
+        - unsure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: technical_skill_level
+    attributes:
+      label: Technical skill
+      description: How much technical knowledge (e.g. Python skills) does the tool require?
+      options:
+        - low
+        - basic
+        - experienced
+        - expert
+        - unsure
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Optional. Anything else worth knowing, one note per line (e.g. limits of the free tier, data sources).

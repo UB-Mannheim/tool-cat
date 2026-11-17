@@ -1,0 +1,164 @@
+name: Neues Tool vorschlagen (Deutsch)
+description: Schlagen Sie ein KI-Tool für den Katalog vor. Wählen Sie „unsicher“, wenn Sie eine Antwort nicht wissen.
+title: "[Neues Tool]: "
+labels: ["new tool"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke für Ihren Vorschlag! Füllen Sie aus, was Sie wissen, und wählen Sie **unsicher**, wenn Sie etwas nicht wissen. Wir prüfen jeden Eintrag, bevor wir ihn aufnehmen.
+        *Prefer English? Use the template "Suggest a new tool (English)" instead.*
+
+  - type: input
+    id: title
+    attributes:
+      label: Name des Tools
+      placeholder: z. B. Elicit
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Website
+      placeholder: https://
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Beschreibung
+      description: Was macht das Tool? Zwei oder drei Sätze genügen.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Art
+      options:
+        - Cloud-Service
+        - App
+        - unsicher
+    validations:
+      required: true
+
+  - type: dropdown
+    id: use_cases
+    attributes:
+      label: Einsatzzwecke
+      description: Mehrfachauswahl möglich.
+      multiple: true
+      options:
+        - Literaturrecherche
+        - Schreibassistent
+        - Manuskript Review
+        - Übersetzung
+        - Chatbot (allgemein)
+        - Bildgenerierung
+        - Audiogenerierung (Text-to-Speech)
+        - Audiotranskription (Speech-to-Text)
+        - Videogenerierung
+        - Textgenerierung
+        - Generierung von Präsentationen
+        - PDF Chat
+        - Prüfungsvorbereitung
+        - unsicher
+    validations:
+      required: true
+
+  - type: input
+    id: other_use_case
+    attributes:
+      label: Anderer Einsatzzweck
+      description: Optional. Beschreiben Sie einen Einsatzzweck, der in der Liste oben fehlt.
+
+  - type: dropdown
+    id: location_group
+    attributes:
+      label: Service-Standort
+      description: Wo betreibt der Anbieter den Dienst und verarbeitet die Daten von Nutzenden?
+      options:
+        - Eigener PC (läuft auf dem eigenen Computer)
+        - EU
+        - Welt (außerhalb der EU)
+        - unsicher
+    validations:
+      required: true
+
+  - type: input
+    id: service_location
+    attributes:
+      label: Land
+      description: Optional. Ländercode des Service-Standorts, falls bekannt.
+      placeholder: z. B. DE, US
+
+  - type: dropdown
+    id: costs
+    attributes:
+      label: Kosten
+      description: "Kostenlos: keine Gebühren. Freemium: kostenlose Grundversion mit kostenpflichtigen Erweiterungen. Bezahlversion: Abo oder Lizenz erforderlich."
+      options:
+        - kostenlos
+        - Freemium
+        - Bezahlversion
+        - unsicher
+    validations:
+      required: true
+
+  - type: dropdown
+    id: is_account_required
+    attributes:
+      label: Konto erforderlich
+      description: Ist für die Nutzung eine Registrierung beim Anbieter notwendig?
+      options:
+        - ja
+        - nein
+        - unsicher
+    validations:
+      required: true
+
+  - type: dropdown
+    id: is_opensource
+    attributes:
+      label: Open Source
+      description: Ist der Quellcode unter einer Open-Source-Lizenz veröffentlicht?
+      options:
+        - ja
+        - nein
+        - unsicher
+    validations:
+      required: true
+
+  - type: dropdown
+    id: for_OER_creation
+    attributes:
+      label: Für OER geeignet
+      description: Eignet sich das Tool für die Erstellung von Open Educational Resources?
+      options:
+        - ja
+        - nein
+        - unsicher
+    validations:
+      required: true
+
+  - type: dropdown
+    id: technical_skill_level
+    attributes:
+      label: Vorkenntnisse
+      description: Wie viel technisches Wissen (bspw. Python-Kenntnisse) ist für die Nutzung notwendig?
+      options:
+        - gering
+        - Basiswissen
+        - Fortgeschritten
+        - Experte
+        - unsicher
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Hinweise
+      description: Optional. Was sonst wichtig ist, ein Hinweis pro Zeile (z. B. Grenzen der kostenlosen Version, Datengrundlage).
