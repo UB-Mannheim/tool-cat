@@ -6,8 +6,9 @@ import pytest
 from toolcat import data
 
 HEADERS = [
-    "title", "type", "description", "url", "notes", "use_cases", "service_location", "costs",
-    "is_account_required", "is_opensource", "for_OER_creation", "technical_skill_level",
+    "title", "type", "description_de", "description_en", "url", "notes_de", "notes_en", "use_cases",
+    "service_location", "costs", "is_account_required", "is_opensource", "for_OER_creation",
+    "technical_skill_level",
 ]
 PICKLISTS = [
     ("type_de", "type_en", "use_case_de", "use_case_en", "costs_de", "costs_en", "bool", "technical_skill_level"),
@@ -20,8 +21,9 @@ PICKLISTS = [
 
 def tool(**overrides):
     row = {
-        "title": "Elicit", "type": "cloud service", "description": "Finds papers.",
-        "url": "https://elicit.com/ ", "notes": None, "use_cases": "literature research",
+        "title": "Elicit", "type": "cloud service", "description_en": "Finds papers.",
+        "description_de": "Fachartikel finden.", "url": "https://elicit.com/ ",
+        "notes_en": None, "notes_de": "Braucht ein Abo.", "use_cases": "literature research",
         "service_location": "US", "costs": "freemium", "is_account_required": "yes",
         "is_opensource": "no", "for_OER_creation": "no", "technical_skill_level": "low",
     }
@@ -53,12 +55,14 @@ def errors(issues):
 
 def test_basic_row(load):
     tools, vocab, issues = load(tool())
-    assert not errors(issues)
-    assert tools[0] | {"description": None, "notes": None} == {
+    assert not issues
+    assert tools[0] == {
         "id": "elicit", "title": "Elicit", "url": "https://elicit.com/", "url_is_link": True,
         "type": "cloud service", "use_cases": ["literature research"], "location": "US",
         "location_group": "non_eea", "costs": "freemium", "account": True, "opensource": False,
-        "oer": False, "skill": "low", "description": None, "notes": None,
+        "oer": False, "skill": "low",
+        "description": {"en": "Finds papers.", "de": "Fachartikel finden."},
+        "notes": {"en": None, "de": "Braucht ein Abo."},
     }
     assert [facet["key"] for facet in vocab] == [
         "type", "use_cases", "location_group", "costs", "account", "opensource", "oer", "skill",
@@ -107,17 +111,34 @@ def test_blank_location_is_local_and_eea_is_grouped(load):
     assert (tools[0]["location"], tools[0]["location_group"]) == ("NO", "eea")
 
 
-def test_german_falls_back_to_null_and_warns_once(load):
-    tools, _, issues = load(tool(), tool(title="B"))
+def test_missing_english_description_is_error(load):
+    _, _, issues = load(tool(description_en=None))
+    assert errors(issues) == ["missing description_en"]
+    assert not [i for i in issues if i.level == "warning"]
+
+
+def test_missing_german_description_falls_back_and_warns_once(load):
+    tools, _, issues = load(tool(description_de=None), tool(title="B", description_de=None), tool(title="C"))
+    assert not errors(issues)
     assert tools[0]["description"] == {"en": "Finds papers.", "de": None}
-    assert tools[0]["notes"] == {"en": "", "de": None}
-    assert [i.message for i in issues if i.level == "warning"] == ["2 of 2 tools have no description_de"]
+    assert [i.message for i in issues if i.level == "warning"] == ["2 of 3 tools have no description_de"]
 
 
-def test_german_columns_are_read_when_present(load):
-    tools, _, issues = load(tool(description_de="Findet Paper."), headers=HEADERS + ["description_de"])
-    assert tools[0]["description"]["de"] == "Findet Paper."
+def test_short_rows_get_every_header():
+    class Sheet:
+        def iter_rows(self, values_only):
+            return iter([("title", "notes_en", "notes_de"), ("Elicit",), ("Asta", None, "Notiz", "extra")])
+
+    assert list(data._rows(Sheet())) == [
+        (2, {"title": "Elicit", "notes_en": "", "notes_de": ""}),
+        (3, {"title": "Asta", "notes_en": "", "notes_de": "Notiz"}),
+    ]
+
+
+def test_blank_notes_are_null(load):
+    tools, _, issues = load(tool(notes_de=None))
     assert not issues
+    assert tools[0]["notes"] == {"en": None, "de": None}
 
 
 def test_reordered_columns_and_sorting(load):

@@ -2,10 +2,13 @@ import json
 import re
 import unicodedata
 import warnings
+from collections.abc import Iterator
 from dataclasses import dataclass
+from itertools import zip_longest
 from pathlib import Path
 
 import openpyxl
+from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 
 REQUIRED = [
     "title", "type", "description_de", "description_en", "url", "notes_de", "notes_en", "use_cases",
@@ -36,42 +39,70 @@ def slugify(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
-def _rows(ws):
+def _rows(ws: ReadOnlyWorksheet) -> Iterator[tuple[int, dict[str, str]]]:
     """
-    Yield (row_number, {header: stripped string}) for every non-empty row below the header.
+    Yield each non-empty row below the header row as (row_number, {header: value}).
+
+    The first row supplies the headers. Every cell is turned into a stripped string, with empty
+    cells as "". Rows that are blank throughout are skipped. Every row gets a key for every
+    header, even when the sheet stores it with fewer cells. Cells under a blank header are dropped.
+    Row numbers match the spreadsheet (the first data row is 2), so issues can point at them.
+
+    Example: (2, {"title": "Elicit", "type": "cloud service", "notes_en": "", ...})
     """
     rows = ws.iter_rows(values_only=True)
     headers = [str(h).strip() if h is not None else "" for h in next(rows, [])]
     for number, row in enumerate(rows, start=2):
         cells = ["" if c is None else str(c).strip() for c in row]
         if any(cells):
-            test = number, {h: c for h, c in zip(headers, cells) if h}
-            yield test
+            yield number, {h: c for h, c in zip_longest(headers, cells, fillvalue="") if h}
 
 
-def _picklists(ws):
+def _picklists(ws: ReadOnlyWorksheet) -> dict[str, list[str]]:
     """
-    Return {column: [values]} with each list ending at its first blank cell.
+    Read the picklists sheet into one list of values per column.
+
+    Each column is an independent list read top to bottom, ending at its first blank cell.
+    Anything below that blank is ignored. A column with a blank first cell is left out.
+
+    Example: {"type_en": ["cloud service", "app"], "type_de": ["Cloud-Service", "App"],
+              "bool": ["yes", "no"], ...}
     """
-    lists, done = {}, set()
+    picklists, done = {}, set()
     for _, row in _rows(ws):
         for header, value in row.items():
             if not value:
                 done.add(header)
             elif header not in done:
-                lists.setdefault(header, []).append(value)
-    return lists
+                picklists.setdefault(header, []).append(value)
+    return picklists
 
 
 def _pairs(lists, name):
-    """Pair the `<name>_en` and `<name>_de` picklist columns into vocab values."""
+    """
+    Pair the `<name>_en` and `<name>_de` picklist columns into vocab values.
+
+    The columns are matched by position. The English value is the key, which is also what tool
+    rows use. A missing German value falls back to the English one.
+
+    Example: _pairs(lists, "type") -> [{"key": "app", "en": "app", "de": "App"}, ...]
+    """
     en, de = lists.get(f"{name}_en", []), lists.get(f"{name}_de", [])
     return [{"key": e, "en": e, "de": de[i] if i < len(de) else e} for i, e in enumerate(en)]
 
 
 def _vocab(lists):
     """
-    Return controlled vocabularies from the .xslx
+    Build the controlled vocabularies (one per filter facet) from the picklists.
+
+    The facets are type, use_cases, location_group, costs, the BOOLS keys and skill, in the
+    order the filters show them. Type, use_cases and costs come from the picklist pairs, and the
+    costs value "no" is renamed to "free". The location groups and yes/no values are fixed. Their
+    labels come from the i18n files. A skill level with no German label also takes its label
+    from i18n.
+
+    Example: [{"key": "type", "values": [{"key": "app", "en": "app", "de": "App"}, ...]},
+              {"key": "account", "values": [{"key": "true"}, {"key": "false"}]}, ...]
     """
     # Costs
     costs = _pairs(lists, "costs")
@@ -103,7 +134,30 @@ def _vocab(lists):
 
 def load(xlsx_path):
     """
-    Return (tools, vocab, issues) for the workbook at `xlsx_path`.
+    Read, validate and normalise the workbook at `xlsx_path`. Return (tools, vocab, issues).
+
+    The picklists sheet becomes the vocab. Each row of the tools sheet is then checked against it
+    and turned into a tool dict, as follows:
+    - The id is slugify(title).
+    - Use cases are split on "*".
+    - Costs "no" becomes "free".
+    - A blank location means "local", and locations are grouped as local, eea or non_eea.
+    - yes/no columns become booleans.
+    - Descriptions and notes become {"en": ..., "de": ...}, with blanks as None.
+
+    Problems do not raise. They are collected as issues, where errors fail the build and warnings
+    are only printed. If a required column is missing, no tools are returned. Tools are sorted by
+    title, ignoring case.
+
+    Example tool: {"id": "elicit", "title": "Elicit", "url": "https://elicit.com/",
+                   "url_is_link": True, "type": "cloud service",
+                   "use_cases": ["literature research"], "location": "US",
+                   "location_group": "non_eea", "costs": "freemium", "account": True,
+                   "opensource": False, "oer": False, "skill": "low",
+                   "description": {"en": "Finds papers.", "de": None},
+                   "notes": {"en": None, "de": None}}
+
+    Example issue: Issue("error", 7, "use case 'juggling' is not in the picklists")
     """
     def pick(column, facet, value=None):
         value = row[column] if value is None else value
@@ -114,8 +168,11 @@ def load(xlsx_path):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
         wb = openpyxl.load_workbook(xlsx_path, read_only=True, data_only=True)
-        picklists = _picklists(wb["picklists"])
-        rows = list(_rows(wb["tools"]))
+        try:
+            picklists = _picklists(wb["picklists"])
+            rows = list(_rows(wb["tools"]))
+        finally:
+            wb.close()  # read-only workbooks keep the file open until closed
 
     issues = []
     error = lambda row, message: issues.append(Issue("error", row, message))
@@ -132,9 +189,8 @@ def load(xlsx_path):
         return [], vocab, issues
 
     tools, seen = [], {}
-    missing_en_desc = missing_de_desc = 0
     for number, row in rows:
-        for field in ("title", "type", "description_de", "description_en"):
+        for field in ("title", "type", "description_en"):  # description_de falls back to English
             if not row[field]:
                 error(number, f"missing {field}")
 
@@ -160,8 +216,6 @@ def load(xlsx_path):
         if not url.startswith("http"):
             issues.append(Issue("warning", number, f"url of '{row['title']}' is not a link: '{url}'"))
 
-        missing_en_desc += not row.get("description_en")
-        missing_de_desc += not row.get("description_de")
         tools.append({
             "id": tool_id,
             "title": row["title"],
@@ -173,20 +227,12 @@ def load(xlsx_path):
             "location_group": "local" if not location else "eea" if location in EEA else "non_eea",
             "costs": pick("costs", "costs", "free" if row["costs"] == "no" else row["costs"]),
             **flags, "skill": pick("technical_skill_level", "skill"),
-            "description": {
-                "en": row.get("description_en") or None,
-                "de": row.get("description_de") or None
-            },
-            "notes": {"en": row.get("notes_en") or None, "de": row.get("notes_de") or None}
+            "description": {"en": row["description_en"] or None, "de": row["description_de"] or None},
+            "notes": {"en": row["notes_en"] or None, "de": row["notes_de"] or None},
         })
 
-    if missing_en_desc > 0 or missing_de_desc > 0:
-        issues.append(Issue(
-            "warning", None, (
-                f"{missing_en_desc} of {len(tools)} tools have no description_en and "
-                f"{missing_de_desc} of {len(tools)} tools have no description_de "
-            )
-        ))
+    if untranslated := sum(not tool["description"]["de"] for tool in tools):
+        issues.append(Issue("warning", None, f"{untranslated} of {len(tools)} tools have no description_de"))
 
     tools.sort(key=lambda tool: tool["title"].casefold())
 
