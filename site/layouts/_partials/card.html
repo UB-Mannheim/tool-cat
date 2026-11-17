@@ -12,7 +12,7 @@
     <p class="label cap">{{ partial "label.html" (dict "facet" "type" "key" $t.type) }}</p>
     <h2 class="card-title">
       {{- if $t.url_is_link -}}
-      <a href="{{ $t.url }}" rel="noopener">{{ $t.title }}<svg class="icon" aria-hidden="true"><use href="#i-out"/></svg><span class="sr-only"> ({{ T "visit_tool" }})</span></a>
+      <a href="{{ $t.url }}" target="_blank" rel="noopener">{{ $t.title }}<svg class="icon" aria-hidden="true"><use href="#i-out"/></svg><span class="sr-only"> ({{ T "visit_tool" }})</span></a>
       {{- else }}{{ $t.title }}{{ end -}}
     </h2>
   </header>
@@ -38,7 +38,11 @@
       {{- if eq . "costs" }}
       <dd><svg class="icon" aria-hidden="true"><use href="#i-tag"/></svg><span class="cap">{{ partial "label.html" (dict "facet" . "key" $value) }}</span></dd>
       {{- else }}
-      <dd class="is-{{ $value }}"><svg class="icon" aria-hidden="true"><use href="#i-{{ cond $value "check" "x" }}"/></svg>{{ partial "label.html" (dict "facet" . "key" $value) }}</dd>
+      {{- /* Each yes/no attribute has its own pair of icons, [yes, no]. Colour marks the good case:
+             needing an account is the drawback, so for it "no" is the good value. */}}
+      {{- $icons := dict "account" (slice "lock" "unlock") "opensource" (slice "code" "code-off") "oer" (slice "teach" "teach-off") }}
+      {{- $good := cond (eq . "account") (not $value) $value }}
+      <dd class="is-{{ $good }}"><svg class="icon" aria-hidden="true"><use href="#i-{{ index (index $icons .) (cond $value 0 1) }}"/></svg>{{ partial "label.html" (dict "facet" . "key" $value) }}</dd>
       {{- end }}
     </div>
     {{- end }}

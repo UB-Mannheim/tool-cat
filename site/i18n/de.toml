@@ -50,7 +50,7 @@ other = "Open Source"
 [facet_oer]
 other = "Für OER geeignet"
 [facet_skill]
-other = "Technische Vorkenntnisse"
+other = "Vorkenntnisse"
 
 [true]
 other = "ja"
@@ -65,11 +65,11 @@ other = "Welt"
 [skill_low]
 other = "gering"
 [skill_basic]
-other = "Grundkenntnisse"
+other = "Basiswissen"
 [skill_experienced]
-other = "fortgeschritten"
+other = "Fortgeschritten"
 [skill_expert]
-other = "Expertenwissen"
+other = "Experte"
 
 [country_DE]
 other = "Deutschland"
