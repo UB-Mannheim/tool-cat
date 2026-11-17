@@ -1,5 +1,3 @@
-/* tool-cat. Layout: on load a pile of chunky playing cards on the left, title and intro beside it.
-   Touching the pile or opening the filters spreads it into a grid; the title shrinks into a header above the filters. */
 /* Colours follow the AiDaLi palette (data/stylesheet/stylesheet.pdf). */
 :root {
   --bg: #f4f8fb;        /* preferred neutral background */
@@ -158,6 +156,7 @@ html.js .app:not(.open) > .site-footer { grid-row: 4; grid-column: 1; }
 .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .chip .n { min-width: 2ch; text-align: right; font: 0.74rem var(--font-data); font-variant-numeric: tabular-nums; color: var(--muted); }
 .chip:hover { border-color: var(--edge); }
+
 /* Ticking a chip must not change its width, or the rows reflow: no bolder text, and the tick sits on the corner. */
 .chip:has(input:checked) {
   background: var(--pop); color: var(--pop-ink); border-color: var(--edge);

@@ -16,7 +16,8 @@
       {{- else }}{{ $t.title }}{{ end -}}
     </h2>
   </header>
-  {{- /* Until a German text exists, the English one is shown and marked as English. */}}
+  {{- /* Fallback runs only from German to English: until a German text exists, the English one is shown
+         and marked as English. A German-only note is not shown on the English page. */}}
   <p class="card-desc"{{ if and (ne $lang "en") (not (index $t.description $lang)) }} lang="en"{{ end }}>{{ $desc }}</p>
   {{- with $notes }}
   <p class="card-note"{{ if and (ne $lang "en") (not (index $t.notes $lang)) }} lang="en"{{ end }}>{{ . }}</p>
