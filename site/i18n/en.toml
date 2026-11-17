@@ -1,6 +1,6 @@
 # Interface texts. Labels for type, use case and costs come from the spreadsheet's picklists.
 title = "Discover AI tools for teaching and OER"
-intro = "A collection of generative AI tools for university teaching and the creation of Open Educational Resources (OER). Compiled as part of the [AiDaLi](https://www.uni-mannheim.de/en/teaching-and-learning-center-zll/projects/aidali-creating-oer-to-build-ai-and-data-literacy/) project at the [University of Mannheim](https://www.uni-mannheim.de/en/)."
+intro = "A collection of (generative) AI tools for university teaching and the creation of Open Educational Resources (OER). Compiled as part of the [AiDaLi](https://www.uni-mannheim.de/en/teaching-and-learning-center-zll/projects/aidali-creating-oer-to-build-ai-and-data-literacy/) project at the [University of Mannheim](https://www.uni-mannheim.de/en/)."
 search_label = "Search tools"
 search_placeholder = "Search by name, purpose or description"
 prompt = "What would you like to do?"
