@@ -20,12 +20,12 @@ logo_ub_url = "https://www.bib.uni-mannheim.de/"
 logo_stiftung_url = "https://stiftung-hochschullehre.de/"
 
 # Tooltips zu den Angaben auf jeder Karte (die Zeilen unter der gepunkteten Linie)
-tip_oer = "Ob sich die Ergebnisse des Tools in Open Educational Resources verwenden lassen, etwa weil die Nutzungsbedingungen eine Veröffentlichung unter offener Lizenz erlauben."
-tip_costs = "Was die Nutzung kostet. Kostenlos: keine Gebühren. Freemium: kostenlose Grundversion mit kostenpflichtigen Erweiterungen. Bezahlversion: Abo oder Lizenz erforderlich."
-tip_account = "Ob Sie sich registrieren müssen, bevor Sie das Tool nutzen können."
-tip_opensource = "Ob der Quellcode unter einer Open-Source-Lizenz veröffentlicht ist, sodass ihn alle einsehen, nutzen und anpassen können."
-tip_location_group = "Wo der Anbieter den Dienst betreibt und Ihre Daten verarbeitet. Bei „Eigener PC“ bleiben Ihre Daten auf Ihrem Rechner."
-tip_skill = "Wie viel technisches Wissen Sie für den Einstieg brauchen, von gering bis Expertenwissen."
+tip_oer = "Ob sich das Tool für die Erstellung von Open Educational Resources eignet."
+tip_costs = "Kostenlos: keine Gebühren. Freemium: kostenlose Grundversion mit kostenpflichtigen Erweiterungen. Bezahlversion: Abo oder Lizenz erforderlich."
+tip_account = "Gibt an, ob für die Nutzung des Tools eine Registrierung beim Serviceanbieter notwendig ist."
+tip_opensource = "Ob der Quellcode unter einer Open-Source-Lizenz veröffentlicht ist, sodass er eingesehen, nachgenutzt und angepasst werden kann."
+tip_location_group = "Wo der Anbieter den Dienst betreibt und die Daten von Nutzenden verarbeitet. Bei \"Eigener PC\" werden Daten nicht an Cloud-Anbieter weitergegeben."
+tip_skill = "Wie viel technisches Wissen (bspw. Python-Kenntnisse) für die Toolnutzung notwendig ist."
 
 # {n} und {total} setzt der Browser ein.
 [results]

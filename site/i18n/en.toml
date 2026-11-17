@@ -21,12 +21,12 @@ logo_ub_url = "https://www.bib.uni-mannheim.de/en/"
 logo_stiftung_url = "https://stiftung-hochschullehre.de/"
 
 # Tooltips on the details of each card (the rows below the dotted line)
-tip_oer = "Whether you can use what the tool produces in Open Educational Resources, for example because its terms allow publishing results under an open licence."
-tip_costs = "What it costs to use the tool. Free: no charge. Freemium: a free version with paid upgrades. Paid: a subscription or licence is required."
-tip_account = "Whether you have to sign up before you can use the tool."
-tip_opensource = "Whether the source code is published under an open-source licence, so anyone can inspect, run and adapt it."
-tip_location_group = "Where the provider runs the service and processes your data. Tools that run on your device keep your data on your computer."
-tip_skill = "How much technical know-how you need to get started, from low to expert."
+tip_oer = "Whether the tool is suitable for creating Open Educational Resources."
+tip_costs = "Free: no fees. Freemium: free basic version with paid extensions. Paid version: subscription or license required."
+tip_account = "Indicates whether registration with the service provider is required to use the tool."
+tip_opensource = "Whether the source code is published under an open-source license, so that it can be viewed, reused, and adapted."
+tip_location_group = "Where the provider operates the service and processes user data. With \"Local PC\", data is not passed on to cloud providers."
+tip_skill = "How much technical knowledge (e.g., Python skills) is required to use the tool."
 
 # {n} and {total} are filled in by the browser.
 [results]
