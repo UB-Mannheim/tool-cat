@@ -215,7 +215,7 @@ html.js .app:not(.open) .card {
   position: absolute; inset: 0; overflow: hidden; pointer-events: none;
   rotate: var(--tilt, 0deg); translate: var(--dx, 0) var(--dy, 0);
 }
-html.js .app:not(.open) .card :is(.attrs, .card-note) { display: none; }
+html.js .app:not(.open) .card :is(.attrs, .card-notes, .card-note) { display: none; }
 html.js .app:not(.open) .card-desc { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; overflow: hidden; }
 html.js .app:not(.open) .tags { max-height: 3.5rem; overflow: hidden; }
 .card:nth-child(5n + 1) { --tilt: -7deg; --dx: -10px; }
@@ -240,8 +240,10 @@ html.js .app:not(.open):has(#browse:hover) .card.top { --tilt: 1deg; --dy: -8px;
 .card-title a:hover { text-decoration: underline; text-decoration-thickness: 3px; text-decoration-color: var(--pop); }
 .card-title .icon { margin-left: 0.3rem; width: 0.7em; height: 0.7em; }
 .card-desc { font-size: 0.93rem; }
-.card-note { font-size: 0.85rem; color: var(--muted); }
-.card-note::before { content: "※ "; }
+/* Each note gets its own ※; a note that wraps lines up under its first word, not under the mark. */
+.card-notes { display: grid; gap: 0.3rem; }
+.card-note { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.35em; font-size: 0.85rem; color: var(--muted); }
+.card-note::before { content: "✴"; }
 .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 .tags li { padding: 0.12rem 0.6rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600; }
 .attrs { margin-top: auto; padding-top: 0.5rem; border-top: 2px dotted var(--line); }
@@ -249,6 +251,7 @@ html.js .app:not(.open):has(#browse:hover) .card.top { --tilt: 1deg; --dy: -8px;
 .attrs div + div { border-top: 1px solid color-mix(in srgb, var(--line) 45%, transparent); }
 .attrs dd { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 0 0.4rem; text-align: right; font-size: 0.9rem; font-weight: 700; }
 .attrs .icon { color: var(--muted); align-self: center; }
+
 /* Tooltips on the detail labels: hover, keyboard focus or a tap shows them; they stay open while the pointer is on them. */
 .attrs dt { position: relative; }
 .hint { cursor: help; border-radius: 3px; }

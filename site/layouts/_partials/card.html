@@ -7,7 +7,7 @@
 <article class="card" id="t-{{ $t.id }}"
   data-type="{{ $t.type }}" data-use_cases="{{ delimit $t.use_cases "|" }}" data-location_group="{{ $t.location_group }}"
   data-costs="{{ $t.costs }}" data-account="{{ $t.account }}" data-opensource="{{ $t.opensource }}" data-oer="{{ $t.oer }}"
-  data-skill="{{ $t.skill }}" data-search="{{ lower (delimit (slice $t.title $desc $notes (delimit $cases " ")) " ") }}">
+  data-skill="{{ $t.skill }}" data-search="{{ lower (delimit (slice $t.title $desc (delimit ($notes | default slice) " ") (delimit $cases " ")) " ") }}">
   <header>
     <p class="label cap">{{ partial "label.html" (dict "facet" "type" "key" $t.type) }}</p>
     <h2 class="card-title">
@@ -20,7 +20,11 @@
          and marked as English. A German-only note is not shown on the English page. */}}
   <p class="card-desc"{{ if and (ne $lang "en") (not (index $t.description $lang)) }} lang="en"{{ end }}>{{ $desc }}</p>
   {{- with $notes }}
-  <p class="card-note"{{ if and (ne $lang "en") (not (index $t.notes $lang)) }} lang="en"{{ end }}>{{ . }}</p>
+  <ul class="card-notes"{{ if and (ne $lang "en") (not (index $t.notes $lang)) }} lang="en"{{ end }}>
+    {{- range . }}
+    <li class="card-note">{{ . }}</li>
+    {{- end }}
+  </ul>
   {{- end }}
   {{- if and $t.url (not $t.url_is_link) }}
   <p class="card-note">{{ $t.url }}</p>
