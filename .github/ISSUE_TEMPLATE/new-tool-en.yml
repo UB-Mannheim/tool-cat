@@ -1,13 +1,13 @@
 name: Suggest a new tool (English)
-description: Propose an AI tool for the catalogue. Pick "unsure" whenever you don't know an answer.
+description: Propose a (generative) AI tool for the catalogue.
 title: "[New tool]: "
 labels: ["new tool"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for suggesting a tool! Fill in what you know and pick **unsure** for anything you don't. We check every entry before adding it.
-        *Lieber auf Deutsch? Use the template "Neues Tool vorschlagen (Deutsch)" instead.*
+        Thank you for the tool suggestion! Please fill in the known details; where uncertain, select **unsure**. Every entry is reviewed before being added.
+        Lieber auf Deutsch? Vorlage „Neues Tool vorschlagen (Deutsch)“.
 
   - type: input
     id: title

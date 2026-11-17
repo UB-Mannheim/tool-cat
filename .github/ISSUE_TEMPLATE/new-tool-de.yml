@@ -1,13 +1,13 @@
 name: Neues Tool vorschlagen (Deutsch)
-description: Schlagen Sie ein KI-Tool für den Katalog vor. Wählen Sie „unsicher“, wenn Sie eine Antwort nicht wissen.
+description: Ein neues (generatives) KI-Tool für den Katalog vorschlagen.
 title: "[Neues Tool]: "
 labels: ["new tool"]
 body:
   - type: markdown
     attributes:
       value: |
-        Danke für Ihren Vorschlag! Füllen Sie aus, was Sie wissen, und wählen Sie **unsicher**, wenn Sie etwas nicht wissen. Wir prüfen jeden Eintrag, bevor wir ihn aufnehmen.
-        *Prefer English? Use the template "Suggest a new tool (English)" instead.*
+        Vielen Dank für den Vorschlag! Bitte alle bekannten Informationen zum Tool angeben und bei Unklarheiten **unsicher** auswählen. Jeder Eintrag wird vor der Aufnahme geprüft.
+        English version available: template “Suggest a new tool (English)”.
 
   - type: input
     id: title
