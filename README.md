@@ -1,6 +1,6 @@
 # tool-cat
 
-A bilingual website (English and German) that presents generative AI tools for teaching and for creating Open Educational Resources. All content comes from `data/genai_tools.xlsx`, and [Hugo](https://gohugo.io/) renders the site.
+Bilingual (English/German) generative AI tools for teaching and creating Open Educational Resources, delivered as a simple website. All content comes from `data/genai_tools.xlsx`, and [Hugo](https://gohugo.io/) renders the site.
 
 ## Installation
 
