@@ -16,6 +16,8 @@
   --tag-5: #2ead8c; --tag-6: #e5f5fc; --tag-7: #f5b4a2; --tag-8: #a1dcca; --tag-9: #88d0e0;
   --tag-10: #f19a82; --tag-11: #81cfb7; --tag-12: #a3d9f2;
   --tag-ink: #003056;
+  --suggestion: #d1e6f2;
+  --suggestion-shadow: #055b88;
 
   --font-display: ui-rounded, "SF Pro Rounded", "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -110,6 +112,13 @@ html:not(.js) .needs-js { display: none !important; }
 .lang-switch a[aria-current] { background: var(--ink); color: var(--bg); }
 .site-title { font: 800 clamp(1.35rem, 1rem + 1.1vw, 1.9rem)/1.1 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
 .site-intro { max-width: 80ch; color: var(--muted); font-size: 0.93rem; }
+.site-tool-suggestion {
+  width: fit-content; max-width: 80ch; padding: 0.35rem 0.85rem;
+  background: var(--suggestion); color: var(--tag-ink); border-left: 4px solid var(--suggestion-shadow); border-radius: 0.5rem;
+  font-size: 0.93rem; font-weight: 600;
+}
+.site-tool-suggestion a { color: inherit; text-decoration-thickness: 2px; text-decoration-color: var(--suggestion-shadow); }
+.site-tool-suggestion a:hover { text-decoration-thickness: 3px; }
 .hero-actions { display: none; }
 .deck-hint { flex: 0 1 auto; min-width: 0; color: var(--ink); font-size: 0.95rem; line-height: 1.35; text-wrap: balance; }
 

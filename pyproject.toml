@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-tool-cat = "toolcat:main"
+tcat = "toolcat:main"
 
 [tool.setuptools.packages.find]
 include = ["toolcat*"]
