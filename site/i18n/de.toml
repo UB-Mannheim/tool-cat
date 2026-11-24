@@ -1,6 +1,6 @@
 title = "KI-Tools für die Lehre und OER-Produktion"
 intro = "Eine Sammlung ausgewählter (generativer) KI-Tools für die universitäre Lehre und die Erstellung von Open Educational Resources (OER). Zusammengetragen im Projekt [AiDaLi](https://www.uni-mannheim.de/zll/projekte/aidali-durch-oer-produktion-zu-ai-und-data-literacy/) der [Universität Mannheim](https://www.uni-mannheim.de/)."
-tool_suggestion = "Neue KI-Tools können auf [GitHub](https://github.com/tsmdt/tool-cat/issues/new/choose) eingereicht werden."
+tool_suggestion = "Neue KI-Tools können auf [GitHub](https://github.com/tsmdt/tool-cat/issues/new/choose) vorgeschlagen werden."
 search_label = "Tools durchsuchen"
 search_placeholder = "Suche nach Name, Anwendungszweck oder Beschreibung"
 prompt = "Anwendungszweck"
