@@ -1,6 +1,8 @@
 # tool-cat
 
-Bilingual (German/English) **catalogue of generative AI tools for teaching and creating Open Educational Resources**. All content comes from `data/genai_tools.xlsx`, and [Hugo](https://gohugo.io/) renders it as a static website. Every push to `main` deploys the site to GitHub Pages.
+Bilingual (German/English) catalogue of generative AI tools for teaching and creating Open Educational Resources. All content comes from `data/genai_tools.xlsx`, and [Hugo](https://gohugo.io/) renders it as a static website.
+
+→ **Browse the catalogue: [https://ub-mannheim.github.io/tool-cat/](https://ub-mannheim.github.io/tool-cat/)**
 
 ## Usage
 
