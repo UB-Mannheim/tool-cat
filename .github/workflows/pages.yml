@@ -26,7 +26,7 @@ jobs:
       - run: uv sync --locked
       - uses: actions/configure-pages@v6
         id: pages
-      - run: uv run tool-cat build --base-url "${{ steps.pages.outputs.base_url }}/"
+      - run: uv run tcat build --base-url "${{ steps.pages.outputs.base_url }}/"
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site/public
