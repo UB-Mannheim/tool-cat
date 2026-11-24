@@ -1,21 +1,21 @@
 # tool-cat
 
-Bilingual (English/German) generative AI tools for teaching and creating Open Educational Resources, delivered as a simple website. All content comes from `data/genai_tools.xlsx`, and [Hugo](https://gohugo.io/) renders the site.
+Bilingual (German/English) **catalogue of generative AI tools for teaching and creating Open Educational Resources**. All content comes from `data/genai_tools.xlsx`, and [Hugo](https://gohugo.io/) renders it as a static website. Every push to `main` deploys the site to GitHub Pages.
 
-## Installation
+## Usage
 
 You only need [uv](https://docs.astral.sh/uv/). It installs Python, the dependencies and Hugo.
 
 ```sh
-uv sync                 # install everything
-uv run tool-cat serve   # preview at http://localhost:1313/
+uv sync            # install everything
+uv run tcat check  # validate the spreadsheet
+uv run tcat serve  # preview at http://localhost:1313/
+uv run tcat build  # build the site into site/public/
 ```
 
-or:
+## Suggesting a tool
 
-```sh
-uv run tool-cat build   # build the site into site/public/
-```
+Know a tool that is missing? [Open an issue](https://github.com/tsmdt/tool-cat/issues/new/choose) with the form in English or German. Every suggestion is reviewed before it is added.
 
 ## Funding
 

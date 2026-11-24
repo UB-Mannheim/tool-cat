@@ -1,10 +1,10 @@
 [project]
 name = "tool-cat"
 version = "0.1.0"
-description = "Add your description here"
+description = "Bilingual (English/German) generative AI tools for teaching and creating Open Educational Resources, delivered as a simple Hugo website."
 readme = "README.md"
 authors = [
-    { name = "tsmdt", email = "thomas.schmidt@uni-mannheim.de" }
+    { name = "Thomas Schmidt", email = "thomas.schmidt@uni-mannheim.de" }
 ]
 requires-python = ">=3.13"
 dependencies = [
