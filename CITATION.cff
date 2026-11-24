@@ -1,0 +1,17 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Tool-Cat
+message: >-
+  Bilingual (English/German) generative AI tools for
+  teaching and creating Open Educational Resources,
+  delivered as a simple Hugo website.
+type: software
+authors:
+  - given-names: Thomas
+    family-names: Schmidt
+    email: thomas.schmidt@uni-mannheim.de
+    affiliation: University of Mannheim
+    orcid: 'https://orcid.org/0000-0003-3620-3355'
+version: 0.1.0
